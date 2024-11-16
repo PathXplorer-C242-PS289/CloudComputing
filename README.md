@@ -1,1 +1,1 @@
-# thisi Cloud Computing repository
+# This is Cloud Computing repository of PAthXplorer
