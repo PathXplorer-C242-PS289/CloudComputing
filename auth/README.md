@@ -5,11 +5,6 @@ initiate ```node_modules```
 npm install
 ```
 
-start project
-```bash
-npm start
-```
-
 create .ENV for database connection
 ```bash
 // db connection
@@ -24,6 +19,11 @@ JWT_SECRET=YOUR_JWT_SECRET_KEY
 // gmail connection
 EMAIL_USER=YOUR_EMAIL_USER
 EMAIL_PASS=YOUR_EMAIL_PASS
+```
+
+start project
+```bash
+npm start
 ```
 
 ## Require
