@@ -1,0 +1,10 @@
+runtime: nodejs18
+instance_class: F2
+env_variables:
+  FIREBASE_PROJECT_ID: "pathxplorer-project"
+  FIRESTORE_REGION: "asia-southeast2"
+  API_BASE_URL: "https://pathxplorer-project.appspot.com"
+entrypoint: node api/server.js
+handlers:
+- url: /.*
+  script: auto
