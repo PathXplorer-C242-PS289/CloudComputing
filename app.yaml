@@ -1,5 +1,5 @@
 runtime: nodejs18
-instance_class: F2
+instance_class: F1
 env_variables:
   FIREBASE_PROJECT_ID: "pathxplorer-project"
   FIRESTORE_REGION: "asia-southeast2"
