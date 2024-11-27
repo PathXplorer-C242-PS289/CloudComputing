@@ -79,67 +79,76 @@ exports.register = async (req, res) => {
 };
 
 // register user google
-exports.registerWithGoogle = async (req, res) => {
+exports.registerWithGoogle = (req, res) => {
   const { idToken } = req.body;
 
-  try {
-    const decodedToken = await admin.auth().verifyIdToken(idToken);
-    const { email, name, picture, uid } = decodedToken;
+  admin
+    .auth()
+    .verifyIdToken(idToken)
+    .then((decodedToken) => {
+      const { email, uid } = decodedToken;
 
-    const [existingUser] = await db.execute(
-      "SELECT * FROM users WHERE email = ?",
-      [email]
-    );
+      db.query(
+        "SELECT * FROM users WHERE email = ?",
+        [email],
+        (err, results) => {
+          if (err) return res.status(500).json({ error: err.message });
 
-    if (existingUser.length > 0) {
-      return res.status(200).json({
-        message: "User already exists, logged in successfully.",
-        user: {
-          id: existingUser[0].id,
-          email: existingUser[0].email,
-          provider_type: "google",
-        },
+          if (results.length > 0) {
+            return res.status(200).json({
+              message: "User already exists, logged in successfully.",
+              user: {
+                id: results[0].id,
+                email: results[0].email,
+                provider_type: "google",
+              },
+            });
+          }
+
+          db.query(
+            "INSERT INTO users (email, provider_id, provider_type) VALUES (?, ?, 'google')",
+            [email, uid],
+            (err, insertResult) => {
+              if (err) return res.status(500).json({ error: err.message });
+
+              res.status(201).json({
+                message: "User registered successfully.",
+                user: {
+                  id: insertResult.insertId,
+                  email,
+                  provider_type: "google",
+                },
+              });
+            }
+          );
+        }
+      );
+    })
+    .catch((error) => {
+      console.error(error);
+      res.status(500).json({
+        message: "Failed to register with Google.",
+        error: error.message,
       });
-    }
-
-    const [result] = await db.execute(
-      "INSERT INTO users (email, provider_id, provider_type) VALUES (?, ?, ?)",
-      [email, uid, "google"]
-    );
-
-    res.status(201).json({
-      message: "User registered successfully.",
-      user: {
-        id: result.insertId,
-        email,
-        provider_type: "google",
-      },
     });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({
-      message: "Failed to register with Google.",
-      error: error.message,
-    });
-  }
 };
 
 // verify OTP
 exports.verifyOtp = (req, res) => {
   const { email, otp } = req.body;
 
-  db.query("SELECT * FROM users WHERE email = ?", [email], (err, results) => {
+  db.query("SELECT * FROM users WHERE email = ?", [email], (err, users) => {
     if (err) return res.status(500).json({ error: err.message });
 
-    if (results.length === 0) {
+    if (users.length === 0) {
       return res.status(404).json({ message: "User not found" });
     }
 
-    const user = results[0];
+    const user = users[0];
 
     db.query(
       "SELECT * FROM otp WHERE user_id = ? AND otp_code = ? AND expired_at > NOW()",
-      [user.user_id, otp],
+      [user.id, otp],
       (err, otpResults) => {
         if (err) return res.status(500).json({ error: err.message });
 
@@ -148,8 +157,8 @@ exports.verifyOtp = (req, res) => {
         }
 
         db.query(
-          "UPDATE users SET verified_at = NOW() WHERE user_id = ?",
-          [user.user_id],
+          "UPDATE users SET verified_at = NOW() WHERE id = ?",
+          [user.id],
           (err) => {
             if (err) return res.status(500).json({ error: err.message });
 
@@ -257,38 +266,46 @@ exports.login = (req, res) => {
 };
 
 // Login user Google
-exports.loginWithGoogle = async (req, res) => {
+exports.loginWithGoogle = (req, res) => {
   const { idToken } = req.body;
 
-  try {
-    const decodedToken = await admin.auth().verifyIdToken(idToken);
-    const { email } = decodedToken;
+  admin
+    .auth()
+    .verifyIdToken(idToken)
+    .then((decodedToken) => {
+      const { email } = decodedToken;
 
-    const [users] = await db.execute("SELECT * FROM users WHERE email = ?", [
-      email,
-    ]);
+      db.query(
+        "SELECT * FROM users WHERE email = ?",
+        [email],
+        (err, results) => {
+          if (err) return res.status(500).json({ error: err.message });
 
-    if (users.length === 0) {
-      return res
-        .status(404)
-        .json({ message: "User not found. Please register first." });
-    }
+          if (results.length === 0) {
+            return res
+              .status(404)
+              .json({ message: "User not found. Please register first." });
+          }
 
-    const user = users[0];
-    res.status(200).json({
-      message: "Login successful.",
-      user: {
-        id: user.id,
-        email: user.email,
-        provider_type: user.provider_type || "google",
-      },
+          const user = results[0];
+          res.status(200).json({
+            message: "Login successful.",
+            user: {
+              id: user.id,
+              email: user.email,
+              provider_type: user.provider_type || "google",
+            },
+          });
+        }
+      );
+    })
+    .catch((error) => {
+      console.error(error);
+      res.status(500).json({
+        message: "Failed to login with Google.",
+        error: error.message,
+      });
     });
-  } catch (error) {
-    console.error(error);
-    res
-      .status(500)
-      .json({ message: "Failed to login with Google.", error: error.message });
-  }
 };
 
 // Forgot Password
@@ -393,13 +410,17 @@ exports.logout = (req, res) => {
     return res.status(400).json({ message: "Token not provided" });
   }
 
-  db.query("INSERT INTO blacklist (token) VALUES (?)", [token], (err) => {
-    if (err) {
-      return res.status(500).json({ error: "Failed to blacklist token" });
-    }
+  db.query(
+    "INSERT INTO blacklist (token, expired_at) VALUES (?, DATE_ADD(NOW(), INTERVAL 1 HOUR))",
+    [token],
+    (err) => {
+      if (err) {
+        return res.status(500).json({ error: "Failed to blacklist token" });
+      }
 
-    res.json({ message: "Successfully logged out" });
-  });
+      res.json({ message: "Successfully logged out" });
+    }
+  );
 };
 
 // Protected route example
