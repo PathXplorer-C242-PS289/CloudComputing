@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Nov 27, 2024 at 10:18 AM
+-- Generation Time: Nov 27, 2024 at 10:27 AM
 -- Server version: 8.0.30
 -- PHP Version: 8.1.10
 
@@ -273,7 +273,7 @@ INSERT INTO `riasec_sessions` (`id`, `user_id`, `start_time`, `end_time`, `creat
 CREATE TABLE `users` (
   `user_id` int NOT NULL,
   `email` varchar(255) NOT NULL,
-  `password` varchar(255) NOT NULL,
+  `password` varchar(255) DEFAULT NULL,
   `verified_at` datetime DEFAULT NULL,
   `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
   `updated_at` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
