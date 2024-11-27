@@ -4,7 +4,16 @@ const bcrypt = require("bcrypt");
 const db = require("../config/db");
 const generateOtp = require("../utils/generateOTP");
 const transporter = require("../utils/nodeMailer");
+const admin = require("firebase-admin");
+const serviceAccount = require("../config/serviceAccountKey.json");
 
+if (!admin.apps.length) {
+  admin.initializeApp({
+    credential: admin.credential.cert(serviceAccount),
+  });
+}
+
+// register user
 exports.register = async (req, res) => {
   const { email, password } = req.body;
 
@@ -23,7 +32,7 @@ exports.register = async (req, res) => {
 
     // Insert into users
     db.query(
-      "INSERT INTO users (email, password) VALUES (?, ?)",
+      "INSERT INTO users (email, password, auth_provider) VALUES (?, ?, 'manual')",
       [email, hashedPassword],
       (err, results) => {
         if (err) return res.status(500).json({ error: err.message });
@@ -69,6 +78,53 @@ exports.register = async (req, res) => {
   });
 };
 
+// register user google
+exports.registerWithGoogle = async (req, res) => {
+  const { idToken } = req.body;
+
+  try {
+    const decodedToken = await admin.auth().verifyIdToken(idToken);
+    const { email, name, picture, uid } = decodedToken;
+
+    const [existingUser] = await db.execute(
+      "SELECT * FROM users WHERE email = ?",
+      [email]
+    );
+
+    if (existingUser.length > 0) {
+      return res.status(200).json({
+        message: "User already exists, logged in successfully.",
+        user: {
+          id: existingUser[0].id,
+          email: existingUser[0].email,
+          provider_type: "google",
+        },
+      });
+    }
+
+    const [result] = await db.execute(
+      "INSERT INTO users (email, provider_id, provider_type) VALUES (?, ?, ?)",
+      [email, uid, "google"]
+    );
+
+    res.status(201).json({
+      message: "User registered successfully.",
+      user: {
+        id: result.insertId,
+        email,
+        provider_type: "google",
+      },
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      message: "Failed to register with Google.",
+      error: error.message,
+    });
+  }
+};
+
+// verify OTP
 exports.verifyOtp = (req, res) => {
   const { email, otp } = req.body;
 
@@ -91,7 +147,6 @@ exports.verifyOtp = (req, res) => {
           return res.status(400).json({ message: "Invalid or expired OTP" });
         }
 
-        // Update users table to mark as verified
         db.query(
           "UPDATE users SET verified_at = NOW() WHERE user_id = ?",
           [user.user_id],
@@ -106,6 +161,7 @@ exports.verifyOtp = (req, res) => {
   });
 };
 
+// send OTP
 exports.sendNewOtp = (req, res) => {
   const { email } = req.body;
 
@@ -120,7 +176,6 @@ exports.sendNewOtp = (req, res) => {
     const otpCode = generateOtp();
     const expiredAt = new Date(Date.now() + 60 * 60 * 1000);
 
-    // Expire existing OTPs
     db.query(
       "UPDATE otp SET expired_at = NOW() WHERE user_id = ?",
       [user.user_id],
@@ -191,9 +246,49 @@ exports.login = (req, res) => {
       res.json({
         message: "Login successful",
         token,
+        user: {
+          id: user.user_id,
+          email: user.email,
+          provider_type: user.auth_provider || "manual",
+        },
       });
     });
   });
+};
+
+// Login user Google
+exports.loginWithGoogle = async (req, res) => {
+  const { idToken } = req.body;
+
+  try {
+    const decodedToken = await admin.auth().verifyIdToken(idToken);
+    const { email } = decodedToken;
+
+    const [users] = await db.execute("SELECT * FROM users WHERE email = ?", [
+      email,
+    ]);
+
+    if (users.length === 0) {
+      return res
+        .status(404)
+        .json({ message: "User not found. Please register first." });
+    }
+
+    const user = users[0];
+    res.status(200).json({
+      message: "Login successful.",
+      user: {
+        id: user.id,
+        email: user.email,
+        provider_type: user.provider_type || "google",
+      },
+    });
+  } catch (error) {
+    console.error(error);
+    res
+      .status(500)
+      .json({ message: "Failed to login with Google.", error: error.message });
+  }
 };
 
 // Forgot Password
@@ -307,7 +402,7 @@ exports.logout = (req, res) => {
   });
 };
 
-// Protected route
+// Protected route example
 exports.protectedRoute = (req, res) => {
   res.json({
     message: "Access granted, you are authenticated",
