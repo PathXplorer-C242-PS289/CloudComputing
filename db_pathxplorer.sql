@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Nov 27, 2024 at 10:27 AM
+-- Generation Time: Dec 02, 2024 at 06:43 AM
 -- Server version: 8.0.30
 -- PHP Version: 8.1.10
 
@@ -267,6 +267,28 @@ INSERT INTO `riasec_sessions` (`id`, `user_id`, `start_time`, `end_time`, `creat
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `test_results`
+--
+
+CREATE TABLE `test_results` (
+  `testId` varchar(255) NOT NULL,
+  `userId` varchar(255) NOT NULL,
+  `category` varchar(255) NOT NULL,
+  `recommendations` text NOT NULL,
+  `timestamp` timestamp NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Dumping data for table `test_results`
+--
+
+INSERT INTO `test_results` (`testId`, `userId`, `category`, `recommendations`, `timestamp`) VALUES
+('test_12345', 'user_001', 'Realistic', 'Engineer, Technician', '2024-12-01 05:00:00'),
+('test_123456', 'user_002', 'Realistic', 'Engineer, Technician', '2024-12-01 05:00:00');
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `users`
 --
 
@@ -380,6 +402,12 @@ ALTER TABLE `riasec_results`
 ALTER TABLE `riasec_sessions`
   ADD PRIMARY KEY (`id`),
   ADD KEY `user_id` (`user_id`);
+
+--
+-- Indexes for table `test_results`
+--
+ALTER TABLE `test_results`
+  ADD PRIMARY KEY (`testId`);
 
 --
 -- Indexes for table `users`
