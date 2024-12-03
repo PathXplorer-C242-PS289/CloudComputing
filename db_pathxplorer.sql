@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Dec 03, 2024 at 06:08 AM
+-- Generation Time: Dec 03, 2024 at 01:48 PM
 -- Server version: 8.0.30
 -- PHP Version: 8.1.10
 
@@ -341,20 +341,18 @@ INSERT INTO `otp` (`id`, `user_id`, `otp_code`, `expired_at`, `created_at`) VALU
 --
 
 CREATE TABLE `test_results` (
-  `id` int NOT NULL,
-  `test_id` int DEFAULT NULL,
+  `test_id` int NOT NULL,
   `user_id` int NOT NULL,
-  `recommendations` text NOT NULL,
-  `timestamp` datetime DEFAULT CURRENT_TIMESTAMP,
-  `category` varchar(255) NOT NULL
+  `category` varchar(255) NOT NULL,
+  `timestamp` datetime DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `test_results`
 --
 
-INSERT INTO `test_results` (`id`, `test_id`, `user_id`, `recommendations`, `timestamp`, `category`) VALUES
-(1, 1, 123, 'Agriculture, Architect, Culinary arts', '2024-12-03 12:00:00', 'R,A,E');
+INSERT INTO `test_results` (`test_id`, `user_id`, `category`, `timestamp`) VALUES
+(1, 1, 'R,I,A', '2024-12-03 12:00:00');
 
 -- --------------------------------------------------------
 
@@ -428,7 +426,8 @@ ALTER TABLE `otp`
 -- Indexes for table `test_results`
 --
 ALTER TABLE `test_results`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`test_id`),
+  ADD KEY `fk_user_id` (`user_id`);
 
 --
 -- Indexes for table `users`
@@ -473,12 +472,6 @@ ALTER TABLE `otp`
   MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
--- AUTO_INCREMENT for table `test_results`
---
-ALTER TABLE `test_results`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
-
---
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
@@ -500,6 +493,12 @@ ALTER TABLE `category_careers`
 --
 ALTER TABLE `otp`
   ADD CONSTRAINT `otp_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE;
+
+--
+-- Constraints for table `test_results`
+--
+ALTER TABLE `test_results`
+  ADD CONSTRAINT `fk_user_id` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

@@ -1,14 +1,14 @@
 const db = require("../config/db");
 
 const saveTestResult = (req, res) => {
-  const { testId, userId, category, recommendations, timestamp } = req.body;
+  const { testId, userId, category, timestamp } = req.body;
 
-  if (!userId || !category || !recommendations) {
+  if (!testId || !userId || !category) {
     return res.status(400).json({ message: "Invalid input data" });
   }
 
   const query =
-    "INSERT INTO test_results (test_id, user_id, category, recommendations, timestamp) VALUES (?, ?, ?, ?, ?)";
+    "INSERT INTO test_results (test_id, user_id, category, timestamp) VALUES (?, ?, ?, ?)";
 
   db.getConnection((err, connection) => {
     if (err) {
@@ -18,13 +18,7 @@ const saveTestResult = (req, res) => {
 
     connection.query(
       query,
-      [
-        testId || null,
-        userId,
-        category,
-        recommendations,
-        timestamp || new Date(),
-      ],
+      [testId, userId, category, timestamp || new Date()],
       (err, result) => {
         connection.release();
 
@@ -49,6 +43,7 @@ const saveTestResult = (req, res) => {
 const getTestResult = (req, res) => {
   const { testId } = req.params;
 
+  // Validasi input testId
   if (!testId) {
     return res.status(400).json({ message: "Invalid test ID" });
   }
