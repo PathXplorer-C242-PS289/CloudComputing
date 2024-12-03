@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Dec 02, 2024 at 06:43 AM
+-- Generation Time: Dec 03, 2024 at 06:08 AM
 -- Server version: 8.0.30
 -- PHP Version: 8.1.10
 
@@ -44,63 +44,265 @@ INSERT INTO `blacklist` (`id`, `token`, `blacklisted_at`) VALUES
 -- --------------------------------------------------------
 
 --
--- Table structure for table `majors`
+-- Table structure for table `careers`
 --
 
-CREATE TABLE `majors` (
+CREATE TABLE `careers` (
   `id` int NOT NULL,
   `name` varchar(255) NOT NULL,
-  `description` text,
-  `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
-  `updated_at` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+  `description` text
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
--- Dumping data for table `majors`
+-- Dumping data for table `careers`
 --
 
-INSERT INTO `majors` (`id`, `name`, `description`, `created_at`, `updated_at`) VALUES
-(1, 'Computer Science', 'Study of computation and programming.', '2024-11-19 13:10:55', '2024-11-19 13:10:55'),
-(2, 'Business Management', 'Focus on business operations and strategy.', '2024-11-19 13:10:55', '2024-11-19 13:10:55'),
-(3, 'Psychology', 'Understanding human behavior and mental processes.', '2024-11-19 13:10:55', '2024-11-19 13:10:55'),
-(4, 'Graphic Design', 'Artistic and creative visual communication.', '2024-11-19 13:10:55', '2024-11-19 13:10:55'),
-(5, 'Mechanical Engineering', 'Design and manufacturing of mechanical systems.', '2024-11-19 13:10:55', '2024-11-19 13:10:55');
+INSERT INTO `careers` (`id`, `name`, `description`) VALUES
+(1, 'Agriculture', NULL),
+(2, 'Architect', NULL),
+(3, 'Athletics', NULL),
+(4, 'Carpenter', NULL),
+(5, 'Culinary arts', NULL),
+(6, 'Chef', NULL),
+(7, 'Chemist', NULL),
+(8, 'Computer engineer', NULL),
+(9, 'Computer programmer', NULL),
+(10, 'Dentist', NULL),
+(11, 'Engineer', NULL),
+(12, 'Fashion design', NULL),
+(13, 'Firefighter', NULL),
+(14, 'Graphic designer', NULL),
+(15, 'Model', NULL),
+(16, 'Musician', NULL),
+(17, 'Nurse', NULL),
+(18, 'Outdoor recreation', NULL),
+(19, 'Park Naturalist', NULL),
+(20, 'Personal trainer', NULL),
+(21, 'Photographer', NULL),
+(22, 'Physical therapy', NULL),
+(23, 'Driver', NULL),
+(24, 'Sports medicine', NULL),
+(25, 'Wilderness medicine', NULL),
+(26, 'Surgeon', NULL),
+(27, 'Veterinarian', NULL),
+(28, 'Web developer', NULL),
+(29, 'Zoologists', NULL),
+(30, 'Wildlife Biologists', NULL),
+(31, 'Actuary', NULL),
+(32, 'Archivist', NULL),
+(33, 'Librarian', NULL),
+(34, 'Biostatistics', NULL),
+(35, 'Accountant', NULL),
+(36, 'Community Health Workers', NULL),
+(37, 'Counselor', NULL),
+(38, 'Dietitian', NULL),
+(39, 'Nutritionist', NULL),
+(40, 'Doctor', NULL),
+(41, 'Medical research', NULL),
+(42, 'Economics major', NULL),
+(43, 'Financial analyst', NULL),
+(44, 'Epidemiology', NULL),
+(45, 'Lawyer', NULL),
+(46, 'Paralegal', NULL),
+(47, 'Pharmacist', NULL),
+(48, 'Physics', NULL),
+(49, 'Poets', NULL),
+(50, 'Lyricists', NULL),
+(51, 'Creative Writers', NULL),
+(52, 'Professor', NULL),
+(53, 'Research', NULL),
+(54, 'Psychologist', NULL),
+(55, 'Art therapist', NULL),
+(56, 'Social Worker', NULL),
+(57, 'Speech-language pathology', NULL),
+(58, 'Myofunctional therapist', NULL),
+(59, 'Technical writer', NULL),
+(60, 'Proofreader', NULL),
+(61, 'Copy Editor', NULL),
+(62, 'Tutor', NULL),
+(63, 'Broadcast journalism', NULL),
+(64, 'Clergy', NULL),
+(65, 'School Counselors', NULL),
+(66, 'Academic Advisors', NULL),
+(67, 'Career Counselors', NULL),
+(68, 'Consultants', NULL),
+(69, 'Entrepreneur', NULL),
+(70, 'Public relations', NULL),
+(71, 'Teacher', NULL),
+(72, 'Business trainer', NULL),
+(73, 'Translator', NULL),
+(74, 'Personal Financial Planner', NULL),
+(75, 'Community Organizer', NULL),
+(76, 'Customer service', NULL),
+(77, 'Educational administration', NULL),
+(78, 'Human Resources', NULL),
+(79, 'Social Advocate', NULL),
+(80, 'Sociology', NULL),
+(81, 'Advisers', NULL),
+(82, 'Business', NULL),
+(83, 'Broker', NULL),
+(84, 'Diplomacy', NULL),
+(85, 'Aerobics Teacher', NULL),
+(86, 'Fitness Trainer', NULL),
+(87, 'Fundraising', NULL),
+(88, 'Manager', NULL),
+(89, 'Management Consultant', NULL),
+(90, 'Market Research Analyst', NULL),
+(91, 'Property manager', NULL),
+(92, 'Community association manager', NULL),
+(93, 'Advertising', NULL),
+(94, 'Marketing', NULL),
+(95, 'Sales', NULL),
+(96, 'Math teacher', NULL),
+(97, 'Office administration', NULL),
+(98, 'Real Estate Agent', NULL),
+(99, 'Statistician', NULL);
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `major_recommendations`
+-- Table structure for table `categories`
 --
 
-CREATE TABLE `major_recommendations` (
+CREATE TABLE `categories` (
   `id` int NOT NULL,
-  `major_id` int NOT NULL,
-  `realistic_min` float DEFAULT NULL,
-  `realistic_max` float DEFAULT NULL,
-  `investigative_min` float DEFAULT NULL,
-  `investigative_max` float DEFAULT NULL,
-  `artistic_min` float DEFAULT NULL,
-  `artistic_max` float DEFAULT NULL,
-  `social_min` float DEFAULT NULL,
-  `social_max` float DEFAULT NULL,
-  `enterprising_min` float DEFAULT NULL,
-  `enterprising_max` float DEFAULT NULL,
-  `conventional_min` float DEFAULT NULL,
-  `conventional_max` float DEFAULT NULL,
-  `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
-  `updated_at` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+  `code` varchar(255) DEFAULT NULL,
+  `name` varchar(50) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
--- Dumping data for table `major_recommendations`
+-- Dumping data for table `categories`
 --
 
-INSERT INTO `major_recommendations` (`id`, `major_id`, `realistic_min`, `realistic_max`, `investigative_min`, `investigative_max`, `artistic_min`, `artistic_max`, `social_min`, `social_max`, `enterprising_min`, `enterprising_max`, `conventional_min`, `conventional_max`, `created_at`, `updated_at`) VALUES
-(1, 1, 30, 60, 50, 80, 10, 30, 20, 40, 20, 50, 10, 40, '2024-11-19 13:12:07', '2024-11-19 13:12:07'),
-(2, 2, 20, 40, 20, 40, 10, 30, 30, 60, 50, 80, 20, 50, '2024-11-19 13:12:07', '2024-11-19 13:12:07'),
-(3, 3, 10, 30, 40, 70, 20, 40, 50, 80, 20, 50, 30, 60, '2024-11-19 13:12:07', '2024-11-19 13:12:07'),
-(4, 4, 10, 30, 10, 40, 50, 80, 20, 50, 20, 40, 10, 30, '2024-11-19 13:12:07', '2024-11-19 13:12:07'),
-(5, 5, 50, 80, 30, 60, 10, 20, 10, 30, 20, 50, 40, 70, '2024-11-19 13:12:07', '2024-11-19 13:12:07');
+INSERT INTO `categories` (`id`, `code`, `name`) VALUES
+(1, 'R', 'Realistic'),
+(2, 'I', 'Investigative'),
+(3, 'A', 'Artistic'),
+(4, 'S', 'Social'),
+(5, 'E', 'Enterprising'),
+(6, 'C', 'Conventional');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `category_careers`
+--
+
+CREATE TABLE `category_careers` (
+  `id` int NOT NULL,
+  `category_id` int NOT NULL,
+  `career_id` int NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Dumping data for table `category_careers`
+--
+
+INSERT INTO `category_careers` (`id`, `category_id`, `career_id`) VALUES
+(1, 1, 1),
+(2, 1, 2),
+(3, 1, 3),
+(4, 1, 4),
+(5, 1, 5),
+(6, 1, 6),
+(7, 2, 7),
+(8, 2, 8),
+(9, 2, 9),
+(10, 2, 10),
+(11, 2, 11),
+(12, 1, 12),
+(13, 4, 13),
+(14, 1, 14),
+(15, 1, 15),
+(16, 1, 16),
+(17, 4, 17),
+(18, 1, 18),
+(19, 4, 19),
+(20, 5, 20),
+(21, 1, 21),
+(22, 4, 22),
+(23, 1, 23),
+(24, 4, 24),
+(25, 4, 25),
+(26, 2, 26),
+(27, 2, 27),
+(28, 1, 28),
+(29, 2, 29),
+(30, 2, 30),
+(31, 2, 31),
+(32, 4, 32),
+(33, 4, 33),
+(34, 2, 34),
+(35, 2, 35),
+(36, 4, 36),
+(37, 4, 37),
+(38, 4, 38),
+(39, 4, 39),
+(40, 2, 40),
+(41, 2, 41),
+(42, 2, 42),
+(43, 2, 43),
+(44, 2, 44),
+(45, 2, 45),
+(46, 2, 46),
+(47, 2, 47),
+(48, 2, 48),
+(49, 1, 49),
+(50, 1, 50),
+(51, 1, 51),
+(52, 2, 52),
+(53, 2, 53),
+(54, 4, 54),
+(55, 4, 55),
+(56, 4, 56),
+(57, 4, 57),
+(58, 4, 58),
+(59, 1, 59),
+(60, 1, 60),
+(61, 1, 61),
+(62, 4, 62),
+(63, 5, 63),
+(64, 5, 64),
+(65, 1, 65),
+(66, 1, 66),
+(67, 1, 67),
+(68, 1, 68),
+(69, 5, 69),
+(70, 5, 70),
+(71, 1, 71),
+(72, 1, 72),
+(73, 1, 73),
+(74, 4, 74),
+(75, 4, 75),
+(76, 1, 65),
+(77, 1, 66),
+(78, 1, 67),
+(79, 1, 68),
+(80, 4, 76),
+(81, 4, 77),
+(82, 4, 78),
+(83, 4, 79),
+(84, 4, 80),
+(85, 4, 56),
+(86, 4, 81),
+(87, 5, 82),
+(88, 5, 83),
+(89, 5, 84),
+(90, 5, 85),
+(91, 5, 86),
+(92, 5, 87),
+(93, 5, 88),
+(94, 5, 89),
+(95, 5, 90),
+(96, 5, 91),
+(97, 5, 92),
+(98, 5, 93),
+(99, 5, 94),
+(100, 5, 95),
+(101, 6, 96),
+(102, 6, 97),
+(103, 6, 98),
+(104, 6, 99);
 
 -- --------------------------------------------------------
 
@@ -135,156 +337,24 @@ INSERT INTO `otp` (`id`, `user_id`, `otp_code`, `expired_at`, `created_at`) VALU
 -- --------------------------------------------------------
 
 --
--- Table structure for table `riasec_answers`
---
-
-CREATE TABLE `riasec_answers` (
-  `id` int NOT NULL,
-  `session_id` int NOT NULL,
-  `question_id` int NOT NULL,
-  `answer` int NOT NULL,
-  `created_at` datetime DEFAULT CURRENT_TIMESTAMP
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
---
--- Dumping data for table `riasec_answers`
---
-
-INSERT INTO `riasec_answers` (`id`, `session_id`, `question_id`, `answer`, `created_at`) VALUES
-(3, 4, 5, 4, '2024-11-19 11:37:28'),
-(5, 5, 1, 4, '2024-11-19 11:43:25'),
-(6, 5, 2, 4, '2024-11-19 11:43:31'),
-(7, 5, 3, 5, '2024-11-19 11:43:36'),
-(8, 6, 1, 5, '2024-11-19 11:45:58'),
-(9, 6, 2, 5, '2024-11-19 11:46:03'),
-(10, 6, 3, 5, '2024-11-19 11:46:06'),
-(11, 6, 4, 5, '2024-11-19 11:46:10'),
-(12, 6, 5, 5, '2024-11-19 11:46:14'),
-(13, 7, 1, 1, '2024-11-19 11:47:38'),
-(14, 7, 2, 2, '2024-11-19 11:47:41'),
-(15, 7, 3, 3, '2024-11-19 11:47:45'),
-(16, 7, 4, 4, '2024-11-19 11:47:49'),
-(17, 7, 5, 5, '2024-11-19 11:47:53'),
-(18, 7, 6, 5, '2024-11-19 11:48:52'),
-(19, 8, 1, 50, '2024-11-19 13:15:42'),
-(20, 8, 2, 70, '2024-11-19 13:16:00'),
-(21, 8, 3, 20, '2024-11-19 13:16:07'),
-(22, 8, 4, 30, '2024-11-19 13:16:34'),
-(23, 8, 5, 40, '2024-11-19 13:16:44'),
-(24, 8, 6, 35, '2024-11-19 13:16:51');
-
--- --------------------------------------------------------
-
---
--- Table structure for table `riasec_questions`
---
-
-CREATE TABLE `riasec_questions` (
-  `id` int NOT NULL,
-  `question_text` text NOT NULL,
-  `riasec_type` enum('realistic','investigative','artistic','social','enterprising','conventional') NOT NULL,
-  `question_index` int NOT NULL,
-  `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
-  `updated_at` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
---
--- Dumping data for table `riasec_questions`
---
-
-INSERT INTO `riasec_questions` (`id`, `question_text`, `riasec_type`, `question_index`, `created_at`, `updated_at`) VALUES
-(1, 'Saya menikmati bekerja dengan alat dan mesin.', 'realistic', 1, '2024-11-19 11:37:22', '2024-11-19 11:37:22'),
-(2, 'Saya suka melakukan eksperimen atau penelitian.', 'investigative', 2, '2024-11-19 11:37:22', '2024-11-19 11:37:22'),
-(3, 'Saya menikmati menulis cerita, puisi, atau artikel.', 'artistic', 3, '2024-11-19 11:37:22', '2024-11-19 11:37:22'),
-(4, 'Saya merasa nyaman membantu orang lain dengan masalah mereka.', 'social', 4, '2024-11-19 11:37:22', '2024-11-19 11:37:22'),
-(5, 'Saya senang memimpin proyek atau tim.', 'enterprising', 5, '2024-11-19 11:37:22', '2024-11-19 11:37:22'),
-(6, 'Saya menyukai pekerjaan yang terorganisasi dan detail.', 'conventional', 6, '2024-11-19 11:37:22', '2024-11-19 11:37:22'),
-(7, 'Saya suka memperbaiki barang yang rusak.', 'realistic', 7, '2024-11-19 11:37:22', '2024-11-19 11:37:22'),
-(8, 'Saya menikmati memecahkan masalah matematika atau sains.', 'investigative', 8, '2024-11-19 11:37:22', '2024-11-19 11:37:22'),
-(9, 'Saya suka menggambar atau mendesain sesuatu.', 'artistic', 9, '2024-11-19 11:37:22', '2024-11-19 11:37:22'),
-(10, 'Saya suka mengajar atau melatih orang lain.', 'social', 10, '2024-11-19 11:37:22', '2024-11-19 11:37:22'),
-(11, 'Saya tertarik pada pemasaran dan negosiasi.', 'enterprising', 11, '2024-11-19 11:37:22', '2024-11-19 11:37:22'),
-(12, 'Saya merasa puas saat mengelola dokumen dan data.', 'conventional', 12, '2024-11-19 11:37:22', '2024-11-19 11:37:22');
-
--- --------------------------------------------------------
-
---
--- Table structure for table `riasec_results`
---
-
-CREATE TABLE `riasec_results` (
-  `id` int NOT NULL,
-  `user_id` int NOT NULL,
-  `realistic` float NOT NULL,
-  `investigative` float NOT NULL,
-  `artistic` float NOT NULL,
-  `social` float NOT NULL,
-  `enterprising` float NOT NULL,
-  `conventional` float NOT NULL,
-  `createdAt` datetime DEFAULT CURRENT_TIMESTAMP,
-  `updatedAt` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `created_at` datetime DEFAULT CURRENT_TIMESTAMP
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
---
--- Dumping data for table `riasec_results`
---
-
-INSERT INTO `riasec_results` (`id`, `user_id`, `realistic`, `investigative`, `artistic`, `social`, `enterprising`, `conventional`, `createdAt`, `updatedAt`, `created_at`) VALUES
-(1, 1, 3.5, 4.2, 3, 4.5, 2.8, 3.7, '2024-11-19 08:59:27', '2024-11-19 08:59:27', '2024-11-19 13:09:20'),
-(2, 2, 4.5, 1.2, 2, 4.2, 1.8, 7.1, '2024-11-19 09:04:41', '2024-11-19 09:04:41', '2024-11-19 13:09:20'),
-(4, 1, 4.5, 1.2, 2, 4.2, 1.8, 7.1, '2024-11-19 09:08:05', '2024-11-19 09:08:05', '2024-11-19 13:09:20'),
-(6, 6, 50, 70, 20, 30, 40, 35, '2024-11-19 13:20:21', '2024-11-19 13:20:21', '2024-11-19 13:20:21');
-
--- --------------------------------------------------------
-
---
--- Table structure for table `riasec_sessions`
---
-
-CREATE TABLE `riasec_sessions` (
-  `id` int NOT NULL,
-  `user_id` int NOT NULL,
-  `start_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `end_time` datetime DEFAULT NULL,
-  `createdAt` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `updatedAt` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
---
--- Dumping data for table `riasec_sessions`
---
-
-INSERT INTO `riasec_sessions` (`id`, `user_id`, `start_time`, `end_time`, `createdAt`, `updatedAt`) VALUES
-(1, 1, '2024-11-19 10:17:48', '2024-11-19 10:29:26', '2024-11-19 10:17:48', '2024-11-19 10:29:26'),
-(3, 2, '2024-11-19 10:29:51', NULL, '2024-11-19 10:29:51', '2024-11-19 10:29:51'),
-(4, 3, '2024-11-19 11:33:27', NULL, '2024-11-19 11:33:27', '2024-11-19 11:33:27'),
-(5, 4, '2024-11-19 11:43:00', '2024-11-19 11:43:58', '2024-11-19 11:43:00', '2024-11-19 11:43:58'),
-(6, 1, '2024-11-19 11:45:42', '2024-11-19 11:46:38', '2024-11-19 11:45:42', '2024-11-19 11:46:38'),
-(7, 5, '2024-11-19 11:47:24', '2024-11-19 11:48:05', '2024-11-19 11:47:24', '2024-11-19 11:48:05'),
-(8, 6, '2024-11-19 13:14:25', '2024-11-19 13:20:21', '2024-11-19 13:14:25', '2024-11-19 13:20:21');
-
--- --------------------------------------------------------
-
---
 -- Table structure for table `test_results`
 --
 
 CREATE TABLE `test_results` (
-  `testId` varchar(255) NOT NULL,
-  `userId` varchar(255) NOT NULL,
-  `category` varchar(255) NOT NULL,
+  `id` int NOT NULL,
+  `test_id` int DEFAULT NULL,
+  `user_id` int NOT NULL,
   `recommendations` text NOT NULL,
-  `timestamp` timestamp NULL DEFAULT CURRENT_TIMESTAMP
+  `timestamp` datetime DEFAULT CURRENT_TIMESTAMP,
+  `category` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `test_results`
 --
 
-INSERT INTO `test_results` (`testId`, `userId`, `category`, `recommendations`, `timestamp`) VALUES
-('test_12345', 'user_001', 'Realistic', 'Engineer, Technician', '2024-12-01 05:00:00'),
-('test_123456', 'user_002', 'Realistic', 'Engineer, Technician', '2024-12-01 05:00:00');
+INSERT INTO `test_results` (`id`, `test_id`, `user_id`, `recommendations`, `timestamp`, `category`) VALUES
+(1, 1, 123, 'Agriculture, Architect, Culinary arts', '2024-12-03 12:00:00', 'R,A,E');
 
 -- --------------------------------------------------------
 
@@ -316,35 +386,6 @@ INSERT INTO `users` (`user_id`, `email`, `password`, `verified_at`, `created_at`
 (6, 'user5@example.com', '$2b$10$8FA81v/RFa.9eQ396glTy.aJX3o4VNUzT/ufEaQvDKvFO28gXhI62', '2024-11-19 13:14:12', '2024-11-19 13:13:47', '2024-11-19 13:14:12', NULL, 'manual'),
 (7, 'user6@example.com', '$2b$10$i/gMkJS18IQkTa.gGHqvg.O.S3xTzT4K2vJIx4iinN/CnFhAlWcG2', NULL, '2024-11-20 13:51:48', '2024-11-20 13:51:48', NULL, 'manual');
 
--- --------------------------------------------------------
-
---
--- Table structure for table `user_recommendations`
---
-
-CREATE TABLE `user_recommendations` (
-  `id` int NOT NULL,
-  `user_id` int NOT NULL,
-  `major_id` int NOT NULL,
-  `recommendation_date` datetime DEFAULT CURRENT_TIMESTAMP,
-  `result_id` int DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `webinars`
---
-
-CREATE TABLE `webinars` (
-  `id` int NOT NULL,
-  `title` varchar(255) NOT NULL,
-  `description` text NOT NULL,
-  `date` datetime NOT NULL,
-  `speaker` varchar(255) NOT NULL,
-  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
 --
 -- Indexes for dumped tables
 --
@@ -356,17 +397,25 @@ ALTER TABLE `blacklist`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indexes for table `majors`
+-- Indexes for table `careers`
 --
-ALTER TABLE `majors`
+ALTER TABLE `careers`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indexes for table `major_recommendations`
+-- Indexes for table `categories`
 --
-ALTER TABLE `major_recommendations`
+ALTER TABLE `categories`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `major_id` (`major_id`);
+  ADD UNIQUE KEY `code` (`code`);
+
+--
+-- Indexes for table `category_careers`
+--
+ALTER TABLE `category_careers`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `category_id` (`category_id`),
+  ADD KEY `career_id` (`career_id`);
 
 --
 -- Indexes for table `otp`
@@ -376,38 +425,10 @@ ALTER TABLE `otp`
   ADD KEY `user_id` (`user_id`);
 
 --
--- Indexes for table `riasec_answers`
---
-ALTER TABLE `riasec_answers`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `session_id` (`session_id`),
-  ADD KEY `question_id` (`question_id`);
-
---
--- Indexes for table `riasec_questions`
---
-ALTER TABLE `riasec_questions`
-  ADD PRIMARY KEY (`id`);
-
---
--- Indexes for table `riasec_results`
---
-ALTER TABLE `riasec_results`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `user_id` (`user_id`);
-
---
--- Indexes for table `riasec_sessions`
---
-ALTER TABLE `riasec_sessions`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `user_id` (`user_id`);
-
---
 -- Indexes for table `test_results`
 --
 ALTER TABLE `test_results`
-  ADD PRIMARY KEY (`testId`);
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Indexes for table `users`
@@ -416,21 +437,6 @@ ALTER TABLE `users`
   ADD PRIMARY KEY (`user_id`),
   ADD UNIQUE KEY `email` (`email`),
   ADD UNIQUE KEY `google_id` (`provider_id`);
-
---
--- Indexes for table `user_recommendations`
---
-ALTER TABLE `user_recommendations`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `user_id` (`user_id`),
-  ADD KEY `major_id` (`major_id`),
-  ADD KEY `fk_result_id` (`result_id`);
-
---
--- Indexes for table `webinars`
---
-ALTER TABLE `webinars`
-  ADD PRIMARY KEY (`id`);
 
 --
 -- AUTO_INCREMENT for dumped tables
@@ -443,16 +449,22 @@ ALTER TABLE `blacklist`
   MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
--- AUTO_INCREMENT for table `majors`
+-- AUTO_INCREMENT for table `careers`
 --
-ALTER TABLE `majors`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+ALTER TABLE `careers`
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=100;
 
 --
--- AUTO_INCREMENT for table `major_recommendations`
+-- AUTO_INCREMENT for table `categories`
 --
-ALTER TABLE `major_recommendations`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+ALTER TABLE `categories`
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+
+--
+-- AUTO_INCREMENT for table `category_careers`
+--
+ALTER TABLE `category_careers`
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=105;
 
 --
 -- AUTO_INCREMENT for table `otp`
@@ -461,28 +473,10 @@ ALTER TABLE `otp`
   MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
--- AUTO_INCREMENT for table `riasec_answers`
+-- AUTO_INCREMENT for table `test_results`
 --
-ALTER TABLE `riasec_answers`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
-
---
--- AUTO_INCREMENT for table `riasec_questions`
---
-ALTER TABLE `riasec_questions`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
-
---
--- AUTO_INCREMENT for table `riasec_results`
---
-ALTER TABLE `riasec_results`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
-
---
--- AUTO_INCREMENT for table `riasec_sessions`
---
-ALTER TABLE `riasec_sessions`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+ALTER TABLE `test_results`
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `users`
@@ -491,59 +485,21 @@ ALTER TABLE `users`
   MODIFY `user_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
--- AUTO_INCREMENT for table `user_recommendations`
---
-ALTER TABLE `user_recommendations`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT for table `webinars`
---
-ALTER TABLE `webinars`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT;
-
---
 -- Constraints for dumped tables
 --
 
 --
--- Constraints for table `major_recommendations`
+-- Constraints for table `category_careers`
 --
-ALTER TABLE `major_recommendations`
-  ADD CONSTRAINT `major_recommendations_ibfk_1` FOREIGN KEY (`major_id`) REFERENCES `majors` (`id`) ON DELETE CASCADE;
+ALTER TABLE `category_careers`
+  ADD CONSTRAINT `category_careers_ibfk_1` FOREIGN KEY (`category_id`) REFERENCES `categories` (`id`),
+  ADD CONSTRAINT `category_careers_ibfk_2` FOREIGN KEY (`career_id`) REFERENCES `careers` (`id`);
 
 --
 -- Constraints for table `otp`
 --
 ALTER TABLE `otp`
   ADD CONSTRAINT `otp_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE;
-
---
--- Constraints for table `riasec_answers`
---
-ALTER TABLE `riasec_answers`
-  ADD CONSTRAINT `riasec_answers_ibfk_1` FOREIGN KEY (`session_id`) REFERENCES `riasec_sessions` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `riasec_answers_ibfk_2` FOREIGN KEY (`question_id`) REFERENCES `riasec_questions` (`id`) ON DELETE CASCADE;
-
---
--- Constraints for table `riasec_results`
---
-ALTER TABLE `riasec_results`
-  ADD CONSTRAINT `riasec_results_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`);
-
---
--- Constraints for table `riasec_sessions`
---
-ALTER TABLE `riasec_sessions`
-  ADD CONSTRAINT `riasec_sessions_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`);
-
---
--- Constraints for table `user_recommendations`
---
-ALTER TABLE `user_recommendations`
-  ADD CONSTRAINT `fk_result_id` FOREIGN KEY (`result_id`) REFERENCES `riasec_results` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `user_recommendations_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `user_recommendations_ibfk_2` FOREIGN KEY (`major_id`) REFERENCES `majors` (`id`) ON DELETE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
