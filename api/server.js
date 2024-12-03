@@ -18,8 +18,8 @@ app.use(errorHandler);
 // Routes parsing
 app.use("/api/auth", authRoutes);
 app.use("/api/profile", profileRoutes);
-// app.use("/api/riasec", riasecRoutes);
-app.use("/api/tests", riasecRoutes);
+app.use("/api/riasec", riasecRoutes);
+// s
 app.use("/api/webinars", webinarRoutes);
 
 app.listen(PORT, () => {

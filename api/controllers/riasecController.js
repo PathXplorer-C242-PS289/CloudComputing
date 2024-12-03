@@ -3,37 +3,61 @@ const db = require("../config/db");
 const saveTestResult = (req, res) => {
   const { testId, userId, category, recommendations, timestamp } = req.body;
 
-  if (!testId || !userId || !category || !recommendations) {
+  if (!userId || !category || !recommendations) {
     return res.status(400).json({ message: "Invalid input data" });
   }
 
   const query =
-    "INSERT INTO test_results (testId, userId, category, recommendations, timestamp) VALUES (?, ?, ?, ?, ?)";
+    "INSERT INTO test_results (test_id, user_id, category, recommendations, timestamp) VALUES (?, ?, ?, ?, ?)";
 
-  db.query(
-    query,
-    [testId, userId, category, recommendations, timestamp || new Date()],
-    (err, result) => {
-      if (err) {
-        console.error(err);
-        return res
-          .status(500)
-          .json({ message: "Error saving test results to database" });
-      }
-
-      res.status(201).json({ message: "Test result saved successfully" });
+  db.getConnection((err, connection) => {
+    if (err) {
+      console.error("Error getting DB connection", err);
+      return res.status(500).json({ message: "Database connection error" });
     }
-  );
+
+    connection.query(
+      query,
+      [
+        testId || null,
+        userId,
+        category,
+        recommendations,
+        timestamp || new Date(),
+      ],
+      (err, result) => {
+        connection.release();
+
+        if (err) {
+          console.error("Error inserting data", err);
+          if (err.code === "ER_NO_REFERENCED_ROW_2") {
+            return res
+              .status(400)
+              .json({ message: "Invalid user_id: User does not exist" });
+          }
+          return res
+            .status(500)
+            .json({ message: "Error saving test results to database" });
+        }
+
+        res.status(201).json({ message: "Test result saved successfully" });
+      }
+    );
+  });
 };
 
 const getTestResult = (req, res) => {
   const { testId } = req.params;
 
-  const query = "SELECT * FROM test_results WHERE testId = ?";
+  if (!testId) {
+    return res.status(400).json({ message: "Invalid test ID" });
+  }
+
+  const query = "SELECT * FROM test_results WHERE test_id = ?";
 
   db.query(query, [testId], (err, result) => {
     if (err) {
-      console.error(err);
+      console.error("Error fetching test results", err);
       return res.status(500).json({ message: "Error fetching test results" });
     }
 
@@ -45,7 +69,41 @@ const getTestResult = (req, res) => {
   });
 };
 
+const getRecommendations = (req, res) => {
+  const { categoryCode } = req.params;
+
+  if (!categoryCode) {
+    return res.status(400).json({ message: "Category code is required" });
+  }
+
+  const categoryCodes = categoryCode.split(",").map((code) => code.trim());
+
+  const query = `
+    SELECT DISTINCT careers.name AS career_name
+    FROM category_careers
+    JOIN categories ON category_careers.category_id = categories.id
+    JOIN careers ON category_careers.career_id = careers.id
+    WHERE categories.code IN (?);
+  `;
+
+  db.query(query, [categoryCodes], (err, results) => {
+    if (err) {
+      console.error(err);
+      return res
+        .status(500)
+        .json({ message: "Error fetching recommendations" });
+    }
+
+    if (results.length === 0) {
+      return res.status(404).json({ message: "No recommendations found" });
+    }
+
+    res.status(200).json({ recommendations: results });
+  });
+};
+
 module.exports = {
   saveTestResult,
   getTestResult,
+  getRecommendations,
 };
