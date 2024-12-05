@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Dec 03, 2024 at 01:48 PM
+-- Generation Time: Dec 05, 2024 at 06:29 AM
 -- Server version: 8.0.30
 -- PHP Version: 8.1.10
 
@@ -337,6 +337,32 @@ INSERT INTO `otp` (`id`, `user_id`, `otp_code`, `expired_at`, `created_at`) VALU
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `riasec_details`
+--
+
+CREATE TABLE `riasec_details` (
+  `id` int NOT NULL,
+  `riasec_type` enum('R','I','A','S','E','C') NOT NULL,
+  `interest_description` text NOT NULL,
+  `key_skills` text NOT NULL,
+  `example_careers` text NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Dumping data for table `riasec_details`
+--
+
+INSERT INTO `riasec_details` (`id`, `riasec_type`, `interest_description`, `key_skills`, `example_careers`) VALUES
+(1, 'R', 'Individuals with the Realistic type are those who enjoy practical, tangible work. They like working with their hands, making, fixing or assembling things, and are often drawn to outdoor activities. This type usually enjoys using tools or machines, building something concrete, or even farming. If you are a Realistic type, you may find satisfaction in a job that allows you to see the immediate results of your efforts. You tend to like working independently or in a structured environment with little social interaction.', 'Operating tools, repairing, designing, manual work, driving, caring for plants or animals.', 'Pilot, Farmer, Engineer, Mechanic'),
+(2, 'I', 'People with the Investigative type are highly curious and tend to enjoy exploration, research and complex problem solving. They like activities that require logical analysis, deep thinking or detailed investigation. This type enjoys learning new things, observing and testing theories. If you are an Investigative type, you are likely to be interested in science, technology or jobs that allow you to find answers to challenging questions.', 'Logical thinking, analyzing, diagnosing, writing reports, designing.', 'Scientist, Doctor, Chemist, Lab Technician'),
+(3, 'A', 'Artistic individuals are creative souls who love to express themselves through art, music, drama or design. They tend to favor work environments that are flexible, inspiring, and give them the freedom to let their imaginations run wild. If you are an Artistic type, you probably enjoy creating something unique, be it a piece of art, a story, or even a performance on stage. You tend to avoid work that is too structured or mechanical.', 'Artistic expression, designing, performing, planning.', 'Artist, Composer, Writer, Actor, Designer'),
+(4, 'S', 'People with the Social type care deeply about others and enjoy helping, serving or supporting others. They feel happy when they can share their knowledge, give advice or teach something to others. If you are a Social type, you tend to enjoy interpersonal interactions and often have good communication skills. You will find satisfaction in work that allows you to improve the well-being or quality of life of others.', 'Communication, empathy, teaching, training, customer service.', 'Teacher, Nurse, Counselor, Social Worker'),
+(5, 'E', 'Individuals with the Enterprising type are natural leaders who love the challenge of influencing, motivating and directing others. They enjoy being involved in decision-making, selling ideas or products, and leading teams towards a common goal. If you are an Enterprising type, you tend to like jobs that are dynamic, challenging and provide opportunities to excel in the world of business or management.', 'Selling, public speaking, managing, promoting ideas.', 'Manager, Lawyer, Entrepreneur, Salesperson'),
+(6, 'C', 'Conventional people like a structured, systematic, and organized work environment. They tend to enjoy administrative tasks such as managing data, keeping records, or running business procedures with high efficiency. If you are a Conventional type, you tend to feel comfortable working with clear rules, enjoy stability, and feel satisfied when completing tasks accurately and on time.', 'Detail-oriented, planning, organizing, record-keeping.', 'Accountant, Librarian, Office Clerk, Data Analyst');
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `test_results`
 --
 
@@ -352,7 +378,9 @@ CREATE TABLE `test_results` (
 --
 
 INSERT INTO `test_results` (`test_id`, `user_id`, `category`, `timestamp`) VALUES
-(1, 1, 'R,I,A', '2024-12-03 12:00:00');
+(1, 1, 'R,I,A', '2024-12-03 12:00:00'),
+(2, 1, 'R,A,E', '2024-12-03 12:00:00'),
+(3, 1, 'R', '2024-12-03 12:00:00');
 
 -- --------------------------------------------------------
 
@@ -423,6 +451,12 @@ ALTER TABLE `otp`
   ADD KEY `user_id` (`user_id`);
 
 --
+-- Indexes for table `riasec_details`
+--
+ALTER TABLE `riasec_details`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `test_results`
 --
 ALTER TABLE `test_results`
@@ -470,6 +504,12 @@ ALTER TABLE `category_careers`
 --
 ALTER TABLE `otp`
   MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+
+--
+-- AUTO_INCREMENT for table `riasec_details`
+--
+ALTER TABLE `riasec_details`
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT for table `users`
