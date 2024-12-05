@@ -32,7 +32,7 @@ exports.register = async (req, res) => {
 
     // Insert into users
     db.query(
-      "INSERT INTO users (email, password, auth_provider) VALUES (?, ?, 'manual')",
+      "INSERT INTO users (email, password, provider_id) VALUES (?, ?, 'manual')",
       [email, hashedPassword],
       (err, results) => {
         if (err) return res.status(500).json({ error: err.message });
@@ -137,8 +137,15 @@ exports.registerWithGoogle = (req, res) => {
 exports.verifyOtp = (req, res) => {
   const { email, otp } = req.body;
 
+  if (!email || !otp) {
+    return res.status(400).json({ message: "Email and OTP are required" });
+  }
+
   db.query("SELECT * FROM users WHERE email = ?", [email], (err, users) => {
-    if (err) return res.status(500).json({ error: err.message });
+    if (err) {
+      console.error("Database Error:", err);
+      return res.status(500).json({ error: "Internal server error" });
+    }
 
     if (users.length === 0) {
       return res.status(404).json({ message: "User not found" });
@@ -148,19 +155,25 @@ exports.verifyOtp = (req, res) => {
 
     db.query(
       "SELECT * FROM otp WHERE user_id = ? AND otp_code = ? AND expired_at > NOW()",
-      [user.id, otp],
+      [user.user_id, otp],
       (err, otpResults) => {
-        if (err) return res.status(500).json({ error: err.message });
+        if (err) {
+          console.error("Database Error:", err);
+          return res.status(500).json({ error: "Internal server error" });
+        }
 
         if (otpResults.length === 0) {
           return res.status(400).json({ message: "Invalid or expired OTP" });
         }
 
         db.query(
-          "UPDATE users SET verified_at = NOW() WHERE id = ?",
-          [user.id],
+          "UPDATE users SET verified_at = NOW() WHERE user_id = ?",
+          [user.user_id],
           (err) => {
-            if (err) return res.status(500).json({ error: err.message });
+            if (err) {
+              console.error("Database Error:", err);
+              return res.status(500).json({ error: "Internal server error" });
+            }
 
             res.json({ message: "Account successfully verified" });
           }
