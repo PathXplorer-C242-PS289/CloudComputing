@@ -3,7 +3,7 @@ const express = require("express");
 const authRoutes = require("./routes/auth");
 const profileRoutes = require("./routes/profile");
 const riasecRoutes = require("./routes/riasec");
-// const webinarRoutes = require("./routes/webinar"); not avail yet
+const webinarRoutes = require("./routes/webinar"); //not avail yet
 const limiter = require("./middlewares/rateLimiter");
 const errorHandler = require("./middlewares/errorHandler");
 require("./config/db");
@@ -16,7 +16,6 @@ app.set('trust proxy', 1); // 1 = single proxy
 
 app.use(express.json());
 app.use(limiter);
-app.use(errorHandler);
 
 app.get('/', (req, res) => { // tambahan sementara untuk GET root route ' / '
   res.send('Welcome to the backend API');
@@ -26,8 +25,9 @@ app.get('/', (req, res) => { // tambahan sementara untuk GET root route ' / '
 app.use("/api/auth", authRoutes);
 app.use("/api/profile", profileRoutes);
 app.use("/api/riasec", riasecRoutes);
-// s
-// app.use("/api/webinars", webinarRoutes); not avail yet
+app.use("/api/webinars", webinarRoutes); // not avail yet
+
+app.use(errorHandler);
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`); // App engine: console.log(`Server running on port ${PORT}`);
