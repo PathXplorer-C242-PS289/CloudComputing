@@ -1,0 +1,21 @@
+service: backend-v2
+runtime: nodejs18
+env: standard
+
+instance_class: F1
+
+env_variables:
+  INSTANCE_CONNECTION_NAME: /cloudsql/pathxplorer-442211:asia-southeast2:pathxplorer-db
+  DB_USER: master-pathxplorer
+  DB_PASS: 123
+  DB_NAME: db-pathxplorer
+
+  EMAIL_USER: bagustest1@example.com #belum include ini di v2
+  EMAIL_PASS: 1 #did not include this in v2 appengine version
+
+handlers:
+  - url: /api/.*
+    script: auto
+
+  - url: /.*
+    script: auto

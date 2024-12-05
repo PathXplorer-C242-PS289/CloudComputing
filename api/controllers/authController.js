@@ -32,7 +32,7 @@ exports.register = async (req, res) => {
 
     // Insert into users
     db.query(
-      "INSERT INTO users (email, password, auth_provider) VALUES (?, ?, 'manual')",
+      "INSERT INTO users (email, password, auth_provider) VALUES (?, ?, 'manual')", //auth_provider not found in users table
       [email, hashedPassword],
       (err, results) => {
         if (err) return res.status(500).json({ error: err.message });

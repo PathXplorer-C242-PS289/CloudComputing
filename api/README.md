@@ -3,6 +3,9 @@
 initiate ```node_modules```
 ```bash
 npm install
+firebase-admin
+express-validator
+express-rate-limit
 ```
 
 create .ENV for database connection
@@ -28,3 +31,4 @@ npm start
 
 ## Require
 - mysql databse
+- serviceAccountKey.json  in '../config/serviceAccountKey.json'

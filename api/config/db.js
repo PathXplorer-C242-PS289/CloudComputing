@@ -2,9 +2,9 @@ require("dotenv").config();
 const mysql = require("mysql2");
 
 const db = mysql.createConnection({
-  host: process.env.DB_HOST,
+  socketPath: '/cloudsql/pathxplorer-442211:asia-southeast2:pathxplorer-db', // socketPath: '/cloudsql/pathxplorer-442211:asia-southeast2:pathxplorer-db', //perubahan kode
   user: process.env.DB_USER,
-  /* password: process.env.DB_PASS, */
+  password: process.env.DB_PASS, 
   database: process.env.DB_NAME,
 });
 
