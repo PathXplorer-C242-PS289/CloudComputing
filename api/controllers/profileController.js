@@ -1,127 +1,113 @@
 const db = require("../config/db");
 
-exports.saveTestResult = (req, res) => {
-  const { testId, userId, category, timestamp } = req.body;
+exports.getProfile = (req, res) => {
+  const userId = req.user.id;
 
-  if (!testId || !userId || !category) {
-    return res.status(400).json({ message: "Invalid input data" });
-  }
-
-  const query =
-    "INSERT INTO test_results (test_id, user_id, category, timestamp) VALUES (?, ?, ?, ?)";
-
-  db.getConnection((err, connection) => {
+  const query = "SELECT id, email, verified FROM users WHERE id = ?";
+  db.query(query, [userId], (err, results) => {
     if (err) {
-      console.error("Error getting DB connection", err);
-      return res.status(500).json({ message: "Database connection error" });
-    }
-
-    connection.query(
-      query,
-      [testId, userId, category, timestamp || new Date()],
-      (err, result) => {
-        connection.release();
-        if (err) {
-          console.error("Error inserting data", err);
-          return res
-            .status(500)
-            .json({ message: "Error saving test results to database" });
-        }
-        res.status(201).json({ message: "Test result saved successfully" });
-      }
-    );
-  });
-};
-
-exports.getTestResult = (req, res) => {
-  const { testId } = req.params;
-
-  if (!testId) {
-    return res.status(400).json({ message: "Invalid test ID" });
-  }
-
-  const query = "SELECT * FROM test_results WHERE test_id = ?";
-
-  db.query(query, [testId], (err, result) => {
-    if (err) {
-      console.error("Error fetching test results", err);
-      return res.status(500).json({ message: "Error fetching test results" });
-    }
-
-    if (result.length === 0) {
-      return res.status(404).json({ message: "Test result not found" });
-    }
-
-    res.status(200).json(result[0]);
-  });
-};
-
-exports.getRecommendations = (req, res) => {
-  const { categoryCode } = req.params;
-
-  if (!categoryCode) {
-    return res.status(400).json({ message: "Category code is required" });
-  }
-
-  const categoryCodes = categoryCode.split(",").map((code) => code.trim());
-
-  const query = `
-    SELECT DISTINCT careers.name AS career_name
-    FROM category_careers
-    JOIN categories ON category_careers.category_id = categories.id
-    JOIN careers ON category_careers.career_id = careers.id
-    WHERE categories.code IN (?);
-  `;
-
-  db.query(query, [categoryCodes], (err, results) => {
-    if (err) {
-      console.error(err);
-      return res
-        .status(500)
-        .json({ message: "Error fetching recommendations" });
+      console.error("Error fetching profile: ", err.message);
+      return res.status(500).json({ success: false, message: "Server error" });
     }
 
     if (results.length === 0) {
-      return res.status(404).json({ message: "No recommendations found" });
+      return res
+        .status(404)
+        .json({ success: false, message: "User not found" });
     }
 
-    res.status(200).json({ recommendations: results });
+    res.status(200).json({
+      success: true,
+      data: results[0],
+    });
   });
 };
 
-exports.getDetailedRecommendations = (req, res) => {
-  const { riasecType } = req.params;
+// PUT /api/profile/update
+exports.updateProfile = (req, res) => {
+  const userId = req.user.id;
+  const { email, password } = req.body;
 
-  if (!riasecType) {
-    return res.status(400).json({ message: "RIASEC type is required" });
+  let query = "UPDATE users SET email = ? WHERE id = ?";
+  let params = [email, userId];
+
+  if (password) {
+    const bcrypt = require("bcryptjs");
+    bcrypt.hash(password, 10, (err, hashedPassword) => {
+      if (err) {
+        console.error("Error hashing password: ", err.message);
+        return res
+          .status(500)
+          .json({ success: false, message: "Server error" });
+      }
+
+      query = "UPDATE users SET email = ?, password = ? WHERE id = ?";
+      params = [email, hashedPassword, userId];
+
+      db.query(query, params, (err, results) => {
+        if (err) {
+          console.error("Error updating profile: ", err.message);
+          return res
+            .status(500)
+            .json({ success: false, message: "Server error" });
+        }
+
+        res.status(200).json({
+          success: true,
+          message: "Profile updated successfully",
+        });
+      });
+    });
+  } else {
+    db.query(query, params, (err, results) => {
+      if (err) {
+        console.error("Error updating profile: ", err.message);
+        return res
+          .status(500)
+          .json({ success: false, message: "Server error" });
+      }
+
+      res.status(200).json({
+        success: true,
+        message: "Profile updated successfully",
+      });
+    });
   }
+};
 
-  const riasecTypes = riasecType
-    .split(",")
-    .map((type) => type.trim().toUpperCase());
+exports.getTestResultsWithRecommendations = (req, res) => {
+  const userId = req.user.id;
 
   const query = `
     SELECT 
-      riasec_type, 
-      interest_description, 
-      key_skills, 
-      example_careers
-    FROM 
-      riasec_details
-    WHERE 
-      riasec_type IN (?);
+      tr.test_id,
+      tr.category,
+      tr.timestamp,
+      rd.riasec_type,
+      rd.interest_description,
+      rd.key_skills,
+      rd.example_careers
+    FROM test_results tr
+    INNER JOIN riasec_details rd ON tr.category = rd.riasec_type
+    WHERE tr.user_id = ?
+    ORDER BY tr.timestamp DESC
   `;
 
-  db.query(query, [riasecTypes], (err, results) => {
+  db.query(query, [userId], (err, results) => {
     if (err) {
-      console.error(err);
-      return res.status(500).json({ message: "Error fetching RIASEC details" });
+      console.error("Error fetching test results: ", err.message);
+      return res.status(500).json({ success: false, message: "Server error" });
     }
 
     if (results.length === 0) {
-      return res.status(404).json({ message: "No RIASEC details found" });
+      return res
+        .status(404)
+        .json({ success: false, message: "No test results found" });
     }
 
-    res.status(200).json({ recommendations: results });
+    res.status(200).json({
+      success: true,
+      data: results,
+    });
   });
 };

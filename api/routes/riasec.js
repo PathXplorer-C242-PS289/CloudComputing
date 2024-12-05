@@ -1,7 +1,6 @@
 const express = require("express");
-const riasecController = require("../controllers/riasecController");
-
 const router = express.Router();
+const riasecController = require("../controllers/riasecController");
 
 router.post("/save", riasecController.saveTestResult);
 router.get("/result/:testId", riasecController.getTestResult);

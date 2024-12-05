@@ -3,6 +3,7 @@ const db = require("../config/db");
 const saveTestResult = (req, res) => {
   const { testId, userId, category, timestamp } = req.body;
 
+  // Validasi input data
   if (!testId || !userId || !category) {
     return res.status(400).json({ message: "Invalid input data" });
   }
@@ -67,6 +68,7 @@ const getTestResult = (req, res) => {
 const getRecommendations = (req, res) => {
   const { categoryCode } = req.params;
 
+  // Validasi input categoryCode
   if (!categoryCode) {
     return res.status(400).json({ message: "Category code is required" });
   }
@@ -97,8 +99,47 @@ const getRecommendations = (req, res) => {
   });
 };
 
+const getDetailedRecommendations = (req, res) => {
+  const { riasecType } = req.params;
+
+  // Validasi input
+  if (!riasecType) {
+    return res.status(400).json({ message: "RIASEC type is required" });
+  }
+
+  const riasecTypes = riasecType
+    .split(",")
+    .map((type) => type.trim().toUpperCase());
+
+  const query = `
+    SELECT 
+      riasec_type, 
+      interest_description, 
+      key_skills, 
+      example_careers
+    FROM 
+      riasec_details
+    WHERE 
+      riasec_type IN (?);
+  `;
+
+  db.query(query, [riasecTypes], (err, results) => {
+    if (err) {
+      console.error(err);
+      return res.status(500).json({ message: "Error fetching RIASEC details" });
+    }
+
+    if (results.length === 0) {
+      return res.status(404).json({ message: "No RIASEC details found" });
+    }
+
+    res.status(200).json({ recommendations: results });
+  });
+};
+
 module.exports = {
   saveTestResult,
   getTestResult,
   getRecommendations,
+  getDetailedRecommendations,
 };
