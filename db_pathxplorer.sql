@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Dec 04, 2024 at 05:59 PM
+-- Generation Time: Dec 05, 2024 at 06:29 AM
 -- Server version: 8.0.30
 -- PHP Version: 8.1.10
 
@@ -379,7 +379,8 @@ CREATE TABLE `test_results` (
 
 INSERT INTO `test_results` (`test_id`, `user_id`, `category`, `timestamp`) VALUES
 (1, 1, 'R,I,A', '2024-12-03 12:00:00'),
-(2, 1, 'R,A,E', '2024-12-03 12:00:00');
+(2, 1, 'R,A,E', '2024-12-03 12:00:00'),
+(3, 1, 'R', '2024-12-03 12:00:00');
 
 -- --------------------------------------------------------
 
