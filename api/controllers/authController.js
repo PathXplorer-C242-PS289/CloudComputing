@@ -30,9 +30,9 @@ exports.register = async (req, res) => {
       return res.status(400).json({ message: "Email is already registered" });
     }
 
-    // Insert into users
+    // Insert user data
     db.query(
-      "INSERT INTO users (email, password, provider_id) VALUES (?, ?, 'manual')",
+      "INSERT INTO users (email, password, provider_type, provider_id) VALUES (?, ?, 'manual', NULL)",
       [email, hashedPassword],
       (err, results) => {
         if (err) return res.status(500).json({ error: err.message });
@@ -41,7 +41,7 @@ exports.register = async (req, res) => {
         const otpCode = generateOtp();
         const expiredAt = new Date(Date.now() + 60 * 60 * 1000);
 
-        // Insert OTP into otp table
+        // Insert OTP data
         db.query(
           "INSERT INTO otp (user_id, otp_code, expired_at) VALUES (?, ?, ?)",
           [userId, otpCode, expiredAt],
@@ -182,51 +182,6 @@ exports.verifyOtp = (req, res) => {
   });
 };
 
-// verify OTP
-/* exports.verifyOtp = (req, res) => {
-  const sql =
-    "SELECT * FROM otp WHERE user_id = ? AND otp_code = ? AND expired_at > NOW()";
-  const params = [user.id, otp];
-  db.query(sql, params, (err, results) => {
-    console.log({ sql, params, results });
-  });
-
-  const { email, otp } = req.body;
-
-  db.query("SELECT * FROM users WHERE email = ?", [email], (err, users) => {
-    if (err) return res.status(500).json({ error: err.message });
-
-    if (users.length === 0) {
-      return res.status(404).json({ message: "User not found" });
-    }
-
-    const user = users[0];
-
-    db.query(
-      "SELECT * FROM otp WHERE user_id = ? AND otp_code = ? AND expired_at > NOW()",
-
-      [user.id, otp],
-      (err, otpResults) => {
-        if (err) return res.status(500).json({ error: err.message });
-
-        if (otpResults.length === 0) {
-          return res.status(400).json({ message: "Invalid or expired OTP" });
-        }
-
-        db.query(
-          "UPDATE users SET verified_at = NOW() WHERE id = ?",
-          [user.id],
-          (err) => {
-            if (err) return res.status(500).json({ error: err.message });
-
-            res.json({ message: "Account successfully verified" });
-          }
-        );
-      }
-    );
-  });
-}; */
-
 // send OTP
 exports.sendNewOtp = (req, res) => {
   const { email } = req.body;
@@ -365,101 +320,127 @@ exports.loginWithGoogle = (req, res) => {
     });
 };
 
-// Forgot Password
 exports.forgotPassword = async (req, res) => {
   const { email } = req.body;
 
-  db.query("SELECT * FROM users WHERE email = ?", [email], (err, results) => {
-    if (err) return res.status(500).json({ error: err.message });
-
-    if (results.length === 0) {
-      return res.status(404).json({ message: "User not found" });
-    }
-
-    const otp = generateOtp();
-
-    db.query(
-      "UPDATE users SET otp = ? WHERE email = ?",
-      [otp, email],
-      (err) => {
-        if (err) return res.status(500).json({ error: err.message });
-
-        const mailOptions = {
-          from: process.env.EMAIL_USER,
-          to: email,
-          subject: "Your OTP for Password Reset",
-          text: `Your OTP code is ${otp}. Please use this code to reset your password.`,
-        };
-
-        transporter.sendMail(mailOptions, (err, info) => {
-          if (err) {
-            return res.status(500).json({ error: "Failed to send OTP email" });
-          }
-
-          res.json({ message: "OTP sent, please check your email" });
-        });
-      }
-    );
-  });
-};
-
-// Verify OTP for password reset
-exports.verifyOtpForReset = (req, res) => {
-  const { email, otp } = req.body;
-
-  db.query("SELECT * FROM users WHERE email = ?", [email], (err, results) => {
-    if (err) return res.status(500).json({ error: err.message });
-
-    if (results.length === 0) {
-      return res.status(404).json({ message: "User not found" });
-    }
-
-    const user = results[0];
-
-    if (user.otp === otp) {
-      res.json({ message: "OTP valid, proceed to reset password" });
-    } else {
-      res.status(400).json({ message: "Invalid OTP" });
-    }
-  });
-};
-
-// Reset password
-exports.resetPassword = async (req, res) => {
-  const { email, otp, newPassword } = req.body;
-
   db.query(
-    "SELECT * FROM users WHERE email = ?",
+    "SELECT user_id FROM users WHERE email = ?",
     [email],
-    async (err, results) => {
+    (err, results) => {
       if (err) return res.status(500).json({ error: err.message });
 
       if (results.length === 0) {
         return res.status(404).json({ message: "User not found" });
       }
 
-      const user = results[0];
+      const userId = results[0].user_id;
+      const otp = generateOtp();
+      const expiredAt = new Date(Date.now() + 60 * 60 * 1000);
 
-      if (user.otp === otp) {
-        const hashedPassword = await bcrypt.hash(newPassword, 10);
+      db.query(
+        "INSERT INTO otp (user_id, otp_code, expired_at) VALUES (?, ?, ?)",
+        [userId, otp, expiredAt],
+        (err) => {
+          if (err) return res.status(500).json({ error: err.message });
 
-        db.query(
-          "UPDATE users SET password = ?, otp = NULL WHERE email = ?",
-          [hashedPassword, email],
-          (err) => {
-            if (err) return res.status(500).json({ error: err.message });
+          const mailOptions = {
+            from: process.env.EMAIL_USER,
+            to: email,
+            subject: "Your OTP for Password Reset",
+            text: `Your OTP code is ${otp}. Please use this code to reset your password. This code will expire in 1 hour.`,
+          };
 
-            res.json({ message: "Password successfully reset" });
-          }
-        );
-      } else {
-        res.status(400).json({ message: "Invalid OTP" });
-      }
+          transporter.sendMail(mailOptions, (err, info) => {
+            if (err) {
+              return res
+                .status(500)
+                .json({ error: "Failed to send OTP email" });
+            }
+
+            res.json({ message: "OTP sent, please check your email" });
+          });
+        }
+      );
     }
   );
 };
 
-// Logout user
+exports.verifyOtpForReset = (req, res) => {
+  const { email, otp } = req.body;
+
+  db.query(
+    "SELECT user_id FROM users WHERE email = ?",
+    [email],
+    (err, results) => {
+      if (err) return res.status(500).json({ error: err.message });
+
+      if (results.length === 0) {
+        return res.status(404).json({ message: "User not found" });
+      }
+
+      const userId = results[0].user_id;
+
+      // Validasi OTP di tabel otp
+      db.query(
+        "SELECT * FROM otp WHERE user_id = ? AND otp_code = ? AND expired_at > NOW()",
+        [userId, otp],
+        (err, results) => {
+          if (err) return res.status(500).json({ error: err.message });
+
+          if (results.length === 0) {
+            return res.status(400).json({ message: "Invalid or expired OTP" });
+          }
+
+          // OTP valid
+          res.json({ message: "OTP valid, proceed to reset password" });
+        }
+      );
+    }
+  );
+};
+
+exports.resetPassword = async (req, res) => {
+  const { email, otp, newPassword } = req.body;
+
+  db.query(
+    "SELECT user_id FROM users WHERE email = ?",
+    [email],
+    (err, results) => {
+      if (err) return res.status(500).json({ error: err.message });
+
+      if (results.length === 0) {
+        return res.status(404).json({ message: "User not found" });
+      }
+
+      const userId = results[0].user_id;
+
+      db.query(
+        "SELECT * FROM otp WHERE user_id = ? AND otp_code = ? AND expired_at > NOW()",
+        [userId, otp],
+        async (err, results) => {
+          if (err) return res.status(500).json({ error: err.message });
+
+          if (results.length === 0) {
+            return res.status(400).json({ message: "Invalid or expired OTP" });
+          }
+
+          const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+          db.query(
+            "UPDATE users SET password = ? WHERE user_id = ?",
+            [hashedPassword, userId],
+            (err) => {
+              if (err) return res.status(500).json({ error: err.message });
+
+              res.json({ message: "Password successfully reset" });
+            }
+          );
+        }
+      );
+    }
+  );
+};
+
 exports.logout = (req, res) => {
   const token = req.header("Authorization")?.replace("Bearer ", "");
 
@@ -468,7 +449,7 @@ exports.logout = (req, res) => {
   }
 
   db.query(
-    "INSERT INTO blacklist (token, expired_at) VALUES (?, DATE_ADD(NOW(), INTERVAL 1 HOUR))",
+    "INSERT INTO blacklist (token, blacklisted_at) VALUES (?, NOW())",
     [token],
     (err) => {
       if (err) {
