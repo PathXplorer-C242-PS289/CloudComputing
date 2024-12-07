@@ -2,11 +2,8 @@ const express = require("express");
 const router = express.Router();
 const riasecController = require("../controllers/riasecController");
 
-router.post("/save", riasecController.saveTestResult);
-router.get("/result/:testId", riasecController.getTestResult);
-router.get(
-  "/recommendations/:categoryCode",
-  riasecController.getRecommendations
-);
+router.post("/save-results", riasecController.saveTestResult);
+router.get("/test-results/:testId", riasecController.getTestResult);
+router.get("/recommendation/:category", riasecController.getRecommendation);
 
 module.exports = router;

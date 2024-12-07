@@ -133,7 +133,6 @@ exports.registerWithGoogle = (req, res) => {
     });
 };
 
-// verify OTP
 exports.verifyOtp = (req, res) => {
   const { email, otp } = req.body;
 
@@ -151,7 +150,7 @@ exports.verifyOtp = (req, res) => {
       return res.status(404).json({ message: "User not found" });
     }
 
-    const user = users[0]; 
+    const user = users[0];
 
     db.query(
       "SELECT * FROM otp WHERE user_id = ? AND otp_code = ? AND expired_at > NOW()",
@@ -182,6 +181,51 @@ exports.verifyOtp = (req, res) => {
     );
   });
 };
+
+// verify OTP
+/* exports.verifyOtp = (req, res) => {
+  const sql =
+    "SELECT * FROM otp WHERE user_id = ? AND otp_code = ? AND expired_at > NOW()";
+  const params = [user.id, otp];
+  db.query(sql, params, (err, results) => {
+    console.log({ sql, params, results });
+  });
+
+  const { email, otp } = req.body;
+
+  db.query("SELECT * FROM users WHERE email = ?", [email], (err, users) => {
+    if (err) return res.status(500).json({ error: err.message });
+
+    if (users.length === 0) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    const user = users[0];
+
+    db.query(
+      "SELECT * FROM otp WHERE user_id = ? AND otp_code = ? AND expired_at > NOW()",
+
+      [user.id, otp],
+      (err, otpResults) => {
+        if (err) return res.status(500).json({ error: err.message });
+
+        if (otpResults.length === 0) {
+          return res.status(400).json({ message: "Invalid or expired OTP" });
+        }
+
+        db.query(
+          "UPDATE users SET verified_at = NOW() WHERE id = ?",
+          [user.id],
+          (err) => {
+            if (err) return res.status(500).json({ error: err.message });
+
+            res.json({ message: "Account successfully verified" });
+          }
+        );
+      }
+    );
+  });
+}; */
 
 // send OTP
 exports.sendNewOtp = (req, res) => {
@@ -271,7 +315,7 @@ exports.login = (req, res) => {
         user: {
           id: user.user_id,
           email: user.email,
-          provider_type: user.auth_provider || "manual",
+          provider_type: user.provider_id || "manual",
         },
       });
     });

@@ -10,6 +10,7 @@ const calculateRiasecScores = (answers) => {
     conventional: 0,
   };
 
+  // Mapping soal ke kategori
   const mapping = {
     realistic: [0, 1, 2, 3, 4, 5, 6, 7],
     investigative: [8, 9, 10, 11, 12, 13, 14, 15],
