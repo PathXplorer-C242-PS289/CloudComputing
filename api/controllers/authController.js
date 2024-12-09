@@ -306,7 +306,7 @@ exports.loginWithGoogle = (req, res) => {
           res.status(200).json({
             message: "Login successful.",
             user: {
-              id: user.id,
+              id: user.user_id,
               email: user.email,
               username: user.username,
               provider_type: user.provider_type || "google",
