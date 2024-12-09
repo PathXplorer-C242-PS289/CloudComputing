@@ -98,7 +98,7 @@ exports.registerWithGoogle = (req, res) => {
             return res.status(200).json({
               message: "User already exists, logged in successfully.",
               user: {
-                id: results[0].id,
+                id: results[0].user_id,
                 email: results[0].email,
                 username: results[0].username || name || "Guest",
                 provider_type: "google",
