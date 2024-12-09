@@ -15,7 +15,7 @@ if (!admin.apps.length) {
 
 // register user
 exports.register = async (req, res) => {
-  const { email, password } = req.body;
+  const { email, password, username } = req.body;
 
   if (!email.includes("@")) {
     return res.status(400).json({ message: "Invalid email format" });
@@ -32,8 +32,8 @@ exports.register = async (req, res) => {
 
     // Insert user data
     db.query(
-      "INSERT INTO users (email, password, provider_type, provider_id) VALUES (?, ?, 'manual', NULL)",
-      [email, hashedPassword],
+      "INSERT INTO users (email, password, username, provider_type, provider_id) VALUES (?, ?, ?, 'manual', NULL)",
+      [email, hashedPassword, username || null],
       (err, results) => {
         if (err) return res.status(500).json({ error: err.message });
 
@@ -86,7 +86,7 @@ exports.registerWithGoogle = (req, res) => {
     .auth()
     .verifyIdToken(idToken)
     .then((decodedToken) => {
-      const { email, uid } = decodedToken;
+      const { email, uid, name } = decodedToken;
 
       db.query(
         "SELECT * FROM users WHERE email = ?",
@@ -100,14 +100,15 @@ exports.registerWithGoogle = (req, res) => {
               user: {
                 id: results[0].id,
                 email: results[0].email,
+                username: results[0].username || name || "Guest",
                 provider_type: "google",
               },
             });
           }
 
           db.query(
-            "INSERT INTO users (email, provider_id, provider_type) VALUES (?, ?, 'google')",
-            [email, uid],
+            "INSERT INTO users (email, username, provider_id, provider_type) VALUES (?, ?, ?, 'google')",
+            [email, name || "Guest", uid],
             (err, insertResult) => {
               if (err) return res.status(500).json({ error: err.message });
 
@@ -116,6 +117,7 @@ exports.registerWithGoogle = (req, res) => {
                 user: {
                   id: insertResult.insertId,
                   email,
+                  username: name || "Guest",
                   provider_type: "google",
                 },
               });
@@ -270,6 +272,7 @@ exports.login = (req, res) => {
         user: {
           id: user.user_id,
           email: user.email,
+          username: user.username,
           provider_type: user.provider_id || "manual",
         },
       });
@@ -305,6 +308,7 @@ exports.loginWithGoogle = (req, res) => {
             user: {
               id: user.id,
               email: user.email,
+              username: user.username,
               provider_type: user.provider_type || "google",
             },
           });

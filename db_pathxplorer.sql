@@ -82,6 +82,7 @@ CREATE TABLE `test_results` (
 
 CREATE TABLE `users` (
   `user_id` int NOT NULL,
+  `username` varchar(100) DEFAULT NULL,
   `email` varchar(255) NOT NULL,
   `password` varchar(255) DEFAULT NULL,
   `verified_at` datetime DEFAULT NULL,
