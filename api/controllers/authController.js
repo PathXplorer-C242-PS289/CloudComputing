@@ -95,12 +95,21 @@ exports.registerWithGoogle = (req, res) => {
           if (err) return res.status(500).json({ error: err.message });
 
           if (results.length > 0) {
+            const user = results[0];
+
+            const token = jwt.sign(
+              { email: user.email, id: user.user_id },
+              process.env.JWT_SECRET,
+              { expiresIn: "1h" }
+            );
+
             return res.status(200).json({
               message: "User already exists, logged in successfully.",
+              token,
               user: {
-                id: results[0].user_id,
-                email: results[0].email,
-                username: results[0].username || name || "Guest",
+                id: user.user_id,
+                email: user.email,
+                username: user.username || name || "Guest",
                 provider_type: "google",
               },
             });
@@ -112,8 +121,15 @@ exports.registerWithGoogle = (req, res) => {
             (err, insertResult) => {
               if (err) return res.status(500).json({ error: err.message });
 
+              const token = jwt.sign(
+                { email, id: insertResult.insertId },
+                process.env.JWT_SECRET,
+                { expiresIn: "1h" }
+              );
+
               res.status(201).json({
                 message: "User registered successfully.",
+                token,
                 user: {
                   id: insertResult.insertId,
                   email,
@@ -303,8 +319,16 @@ exports.loginWithGoogle = (req, res) => {
           }
 
           const user = results[0];
+
+          const token = jwt.sign(
+            { email: user.email, id: user.user_id },
+            process.env.JWT_SECRET,
+            { expiresIn: "1h" }
+          );
+
           res.status(200).json({
             message: "Login successful.",
+            token,
             user: {
               id: user.user_id,
               email: user.email,
