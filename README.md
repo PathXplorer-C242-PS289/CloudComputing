@@ -80,7 +80,7 @@ curl --location 'http://localhost:3000/api/auth/register' \
 }
 ```
 
-### **POST /forgot-password**  
+#### **POST /forgot-password**  
 **URL:** `http://localhost:3000/api/auth/forgot-password`
 
 **Body:**  
@@ -103,7 +103,7 @@ curl --location 'http://localhost:3000/api/auth/forgot-password' \
 }
 ```
 
-### **POST /verify-reset-password**
+#### **POST /verify-reset-password**
 **URL:** `http://localhost:3000/api/auth/verify-otp`
 
 **Body:**
@@ -123,7 +123,7 @@ curl --location 'http://localhost:3000/api/auth/verify-otp' \
 }'
 ```
 
-### **POST /reset-password**
+#### **POST /reset-password**
 **URL:** `http://localhost:3000/api/auth/reset-password`
 
 **Body:**
@@ -152,7 +152,7 @@ curl --location 'http://localhost:3000/api/auth/reset-password' \
 }
 ```
 
-### **POST /logout**
+#### **POST /logout**
 **URL:** `https://backend-v3-dot-pathxplorer-442211.et.r.appspot.com//api/auth/logout`
 
 **Request Headers**
@@ -172,9 +172,9 @@ curl --location --request POST 'http://localhost:3000/api/auth/logout?Authorizat
 }
 ```
 
-#### Profile
+### Profile
 
-### **GET /profile**
+#### **GET /profile**
 **URL:** `https://backend-v3-dot-pathxplorer-442211.et.r.appspot.com//api/profile/`
 
 **Request Headers**
@@ -192,7 +192,7 @@ curl --location ''
 
 ```
 
-### **PUT /update-profile**
+#### **PUT /update-profile**
 **URL:** `http://localhost:3000/api/profile/update`
 
 **Request Headers**
@@ -219,9 +219,9 @@ curl --location ''
 
 ```
 
-#### RIASEC
+### RIASEC
 
-### **POST /save**
+#### **POST /save**
 **URL:** `https://backend-v3-dot-pathxplorer-442211.et.r.appspot.com//api/riasec/save`
 
 **Body:**
@@ -245,7 +245,7 @@ curl --location ''
 
 ```
 
-### **GET /result**
+#### **GET /result**
 **URL:** `https://backend-v3-dot-pathxplorer-442211.et.r.appspot.com//api/riasec/result/:testId`
 
 **Path Variables:**
@@ -258,7 +258,7 @@ testId
 
 ```
 
-### **GET /get recommendation**
+#### **GET /get recommendation**
 **URL:** `https://backend-v3-dot-pathxplorer-442211.et.r.appspot.com//api/riasec/recommendation/R`
 
 **Response:**
@@ -266,7 +266,7 @@ testId
 
 ```
 
-### ** /**
+#### ** /**
 **URL:** ``
 
 **Body:**
