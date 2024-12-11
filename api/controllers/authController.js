@@ -63,7 +63,7 @@ exports.register = async (req, res) => {
               }
 
               const token = jwt.sign({ email }, process.env.JWT_SECRET, {
-                expiresIn: "1h",
+                expiresIn: "24h",
               });
 
               res.status(201).json({
@@ -100,7 +100,7 @@ exports.registerWithGoogle = (req, res) => {
             const token = jwt.sign(
               { email: user.email, id: user.user_id },
               process.env.JWT_SECRET,
-              { expiresIn: "1h" }
+              { expiresIn: "24h" }
             );
 
             return res.status(200).json({
@@ -124,7 +124,7 @@ exports.registerWithGoogle = (req, res) => {
               const token = jwt.sign(
                 { email, id: insertResult.insertId },
                 process.env.JWT_SECRET,
-                { expiresIn: "1h" }
+                { expiresIn: "24h" }
               );
 
               res.status(201).json({
@@ -279,7 +279,7 @@ exports.login = (req, res) => {
       const token = jwt.sign(
         { email: user.email, id: user.user_id },
         process.env.JWT_SECRET,
-        { expiresIn: "1h" }
+        { expiresIn: "24h" }
       );
 
       res.json({
@@ -323,7 +323,7 @@ exports.loginWithGoogle = (req, res) => {
           const token = jwt.sign(
             { email: user.email, id: user.user_id },
             process.env.JWT_SECRET,
-            { expiresIn: "1h" }
+            { expiresIn: "24h" }
           );
 
           res.status(200).json({
