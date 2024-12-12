@@ -25,6 +25,37 @@ curl --location 'http://localhost:3000/api/auth/register' \
     "password": "password"
 }'
 ```
+**Response**
+```
+{
+    "message": "User registered, OTP sent",
+    "token": "<JWT-token>"
+}
+```
+
+
+#### POST /register/google
+`https://backend-v3-dot-pathxplorer-442211.et.r.appspot.com//api/auth/register/google`
+
+**Body:**
+```json
+{
+  "idToken": "<your-google-id-token>"
+}
+
+```
+**Example:**
+```bash
+curl --location 'http://localhost:3000/api/auth/register/google' \
+--data '{
+  "idToken": "<your-google-id-token>"
+}
+'
+```
+**Response**
+```
+
+```
 
 #### POST /verify-register
 `https://backend-v3-dot-pathxplorer-442211.et.r.appspot.com/api/auth/verify`
@@ -33,7 +64,7 @@ curl --location 'http://localhost:3000/api/auth/register' \
 ```
 {
     "email": "youremail@example.com",
-    "otp": "your-otp-digit"
+    "otp": "your-otp"
 }
 ```
 
@@ -42,8 +73,15 @@ curl --location 'http://localhost:3000/api/auth/register' \
 curl --location 'http://localhost:3000/api/auth/verify' \
 --data-raw '{
     "email": "youremail@example.com",
-    "otp": "147569"
+    "otp": "your-otp"
 }'
+```
+**Response**
+```
+{
+    "message": "User registered, OTP sent",
+    "token": "<JWT-token>"
+}
 ```
 
 #### POST /login
@@ -59,23 +97,51 @@ curl --location 'http://localhost:3000/api/auth/verify' \
 ```
 **Example:**
 ```bash
-curl --location 'http://localhost:3000/api/auth/register' \
+curl --location 'http://localhost:3000/api/auth/login' \
 --data-raw '{
     "email": "youremail@example.com",
     "password": "password"
 }'
 ```
-
 **Response**
 ```
 {
     "message": "Login successful",
-    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InVzZXJAZXhhbXBsZS5jb20iLCJpZCI6MiwiaWF0IjoxNzMzNzUxMDYyLCJleHAiOjE3MzM3NTQ2NjJ9.1zjbZQoizyWDjER1bomi8rBPJrEm5JwnblsMdrps2mE",
+    "token": "JWT-token",
     "user": {
-        "id": 2,
+        "id": 1,
         "email": "user@example.com",
         "username": "user1",
         "provider_type": "manual"
+    }
+}
+```
+
+#### POST /login/google
+`https://backend-v3-dot-pathxplorer-442211.et.r.appspot.com/api/auth/login/google`
+
+**Body:**
+```json
+{
+    "idToken": "<your-google-id-token>"
+}
+```
+**Example:**
+```bash
+curl --location 'http://localhost:3000/api/auth/login/google' \
+--data '{
+    "idToken": "<token>"
+}'
+```
+**Response**
+```
+{
+    "message": "Login successful.",
+    "user": {
+        "id": 2,
+        "email": "youremailgoogle@gmail.com",
+        "username": "username google",
+        "provider_type": "google"
     }
 }
 ```
@@ -93,7 +159,7 @@ curl --location 'http://localhost:3000/api/auth/register' \
 ```json
 curl --location 'http://localhost:3000/api/auth/forgot-password' \
 --data-raw '{
-  "email": "admin@example.com"
+  "email": "user@example.com"
 }'
 ```
 **Response:**
@@ -109,18 +175,23 @@ curl --location 'http://localhost:3000/api/auth/forgot-password' \
 **Body:**
 ```json
 {
-    "email": "admin@example.com",
-    "otp": "508891"
+    "email": "youremail@example.com",
+    "otp": "<your-otp>"
 }
 ```
-
 **Example:**
 ```json
 curl --location 'http://localhost:3000/api/auth/verify-otp' \
 --data-raw '{
-    "email": "admin@example.com",
-    "otp": "508891"
+    "email": "youremail@example.com",
+    "otp": "<your-otp>"
 }'
+```
+**Response**
+```
+{
+    "message": "OTP valid, proceed to reset password"
+}
 ```
 
 #### **POST /reset-password**
@@ -129,22 +200,20 @@ curl --location 'http://localhost:3000/api/auth/verify-otp' \
 **Body:**
 ```json
 {
-    "email": "admin@example.com",
-    "otp": "508891",
-    "newPassword": "password123"
+    "email": "youremail@example.com",
+    "otp": "<your-otp>",
+    "newPassword": "passwordnew"
 }
 ```
-
 **Example:**
 ```json
 curl --location 'http://localhost:3000/api/auth/reset-password' \
 --data-raw '{
-    "email": "admin@example.com",
-    "otp": "123456",
-    "newPassword": "passwordbaru"
+    "email": "youremail@example.com",
+    "otp": "<your-otp>",
+    "newPassword": "passwordnew"
 }'
 ```
-
 **Response:**
 ```json
 {
@@ -159,12 +228,10 @@ curl --location 'http://localhost:3000/api/auth/reset-password' \
 ```
 Authorization: Bearer <token>
 ```
-
 **Example:**
 ```json
 curl --location --request POST 'http://localhost:3000/api/auth/logout?Authorization=Bearer%20%3Ctoken%3E'
 ```
-
 **Response:**
 ```json
 {
@@ -181,18 +248,17 @@ curl --location --request POST 'http://localhost:3000/api/auth/logout?Authorizat
 ```
 Authorization: Bearer <token>
 ```
-
 **Example:**
 ```json
-curl --location ''
+curl --location 'http://localhost:3000/api/profile/' \
+--header 'Authorization: Bearer <token>'
 ```
-
 **Response:**
 ```json
 {
     "success": true,
     "data": {
-        "user_id": 3,
+        "user_id": 1,
         "email": "user2@example.com",
         "verified_at": "2024-12-09T10:33:55.000Z",
         "testResults": [
@@ -217,24 +283,32 @@ curl --location ''
 ```
 Authorization: Bearer <token>
 ```
-
 **Body:**
 ```json
 {
   "email": "user@example.com",
-  "username": "user1",
-  "password": "password"
+  "username": "newusername",
+  "password": "passwordupdateprofile"
 }
 ```
-
 **Example:**
 ```json
-curl --location ''
+curl --location --request PUT 'http://localhost:3000/api/profile/update' \
+--header 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InVzZXI0QGV4YW1wbGUuY29tIiwiaWQiOjgsImlhdCI6MTczNDAxMjk5NiwiZXhwIjoxNzM0MDk5Mzk2fQ.d8rSNrQFbP-vnHQIGXc_M6v-ZM2Oyym50oO4SHvEpCs' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+  "email": "user@example.com",
+  "username": "newusername",
+  "password": "passwordupdateprofile"
+}'
 ```
 
 **Response:**
 ```json
-
+{
+    "success": true,
+    "message": "Profile updated successfully"
+}
 ```
 
 ### RIASEC
@@ -250,14 +324,19 @@ curl --location ''
   "category": "R",
   "timestamp": "2024-12-03T12:00:00"
 }
-
 ```
-
 **Example:**
 ```json
-
+curl --location 'http://localhost:3000/api/riasec/save-results' \
+--header 'Content-Type: application/json' \
+--data '{
+  "testId": 1,
+  "userId": 1,
+  "category": "R",
+  "timestamp": "2024-12-03T12:00:00"
+}
+'
 ```
-
 **Response:**
 ```json
 {
@@ -268,17 +347,16 @@ curl --location ''
 #### **GET /result**
 **URL:** `https://backend-v3-dot-pathxplorer-442211.et.r.appspot.com/api/riasec/test-results/:testId`
 
-**Path Variables:**
+**Example:**
+```json
+curl --location 'http://localhost:3000/api/riasec/test-results/1'
 ```
-testId
-```
-
 **Response:**
 ```json
 {
     "test_id": 1,
-    "user_id": 2,
-    "category": "C",
+    "user_id": 1,
+    "category": "R",
     "timestamp": "2024-12-03T05:00:00.000Z"
 }
 ```
@@ -297,20 +375,3 @@ testId
 }
 ```
 
-#### ** /**
-**URL:** ``
-
-**Body:**
-```json
-
-```
-
-**Example:**
-```json
-
-```
-
-**Response:**
-```json
-
-```
