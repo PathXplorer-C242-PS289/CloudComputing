@@ -1,5 +1,12 @@
 # Getting Started
 
+Let Clone the Project First
+
+```bash
+git clone https://github.com/PathXplorer-C242-PS289/CloudComputing.git
+```
+Goes to the file and open in terminal/CLI
+
 initiate ```node_modules```
 ```bash
 npm install
