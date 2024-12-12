@@ -1,4 +1,4 @@
-# This is Cloud Computing repository of PAthXplorer ----
+# This is Cloud Computing repository of PathXplorer ----
 
 # pathXplorer API Documentation
 
@@ -27,7 +27,7 @@ curl --location 'http://localhost:3000/api/auth/register' \
 ```
 
 #### POST /verify-register
-`https://backend-v3-dot-pathxplorer-442211.et.r.appspot.com//api/auth/verify`
+`https://backend-v3-dot-pathxplorer-442211.et.r.appspot.com/api/auth/verify`
 
 **Body:**
 ```
@@ -47,7 +47,7 @@ curl --location 'http://localhost:3000/api/auth/verify' \
 ```
 
 #### POST /login
-`https://backend-v3-dot-pathxplorer-442211.et.r.appspot.com//api/auth/login`
+`https://backend-v3-dot-pathxplorer-442211.et.r.appspot.com/api/auth/login`
 
 **Body:**
 ```json
@@ -189,7 +189,25 @@ curl --location ''
 
 **Response:**
 ```json
-
+{
+    "success": true,
+    "data": {
+        "user_id": 3,
+        "email": "user2@example.com",
+        "verified_at": "2024-12-09T10:33:55.000Z",
+        "testResults": [
+            {
+                "test_id": 4,
+                "category": "R",
+                "timestamp": "2024-12-03T05:00:00.000Z",
+                "riasec_type": "R",
+                "interest_description": "Individuals with the Realistic type are those who enjoy practical, tangible work. They like working with their hands, making, fixing or assembling things, and are often drawn to outdoor activities. This type usually enjoys using tools or machines, building something concrete, or even farming. If you are a Realistic type, you may find satisfaction in a job that allows you to see the immediate results of your efforts. You tend to like working independently or in a structured environment with little social interaction.",
+                "key_skills": "Operating tools, repairing, designing, manual work, driving, caring for plants or animals.",
+                "example_careers": "Pilot, Farmer, Engineer, Mechanic"
+            }
+        ]
+    }
+}
 ```
 
 #### **PUT /update-profile**
@@ -222,7 +240,7 @@ curl --location ''
 ### RIASEC
 
 #### **POST /save**
-**URL:** `https://backend-v3-dot-pathxplorer-442211.et.r.appspot.com//api/riasec/save`
+**URL:** `https://backend-v3-dot-pathxplorer-442211.et.r.appspot.com/api/riasec/save-results`
 
 **Body:**
 ```json
@@ -242,11 +260,13 @@ curl --location ''
 
 **Response:**
 ```json
-
+{
+    "message": "Test result saved successfully"
+}
 ```
 
 #### **GET /result**
-**URL:** `https://backend-v3-dot-pathxplorer-442211.et.r.appspot.com//api/riasec/result/:testId`
+**URL:** `https://backend-v3-dot-pathxplorer-442211.et.r.appspot.com/api/riasec/test-results/:testId`
 
 **Path Variables:**
 ```
@@ -255,15 +275,26 @@ testId
 
 **Response:**
 ```json
-
+{
+    "test_id": 1,
+    "user_id": 2,
+    "category": "C",
+    "timestamp": "2024-12-03T05:00:00.000Z"
+}
 ```
 
 #### **GET /get recommendation**
-**URL:** `https://backend-v3-dot-pathxplorer-442211.et.r.appspot.com//api/riasec/recommendation/R`
+**URL:** `https://backend-v3-dot-pathxplorer-442211.et.r.appspot.com/api/riasec/recommendation/:category`
 
 **Response:**
 ```json
-
+{
+    "id": 1,
+    "riasec_type": "R",
+    "interest_description": "Individuals with the Realistic type are those who enjoy practical, tangible work. They like working with their hands, making, fixing or assembling things, and are often drawn to outdoor activities. This type usually enjoys using tools or machines, building something concrete, or even farming. If you are a Realistic type, you may find satisfaction in a job that allows you to see the immediate results of your efforts. You tend to like working independently or in a structured environment with little social interaction.",
+    "key_skills": "Operating tools, repairing, designing, manual work, driving, caring for plants or animals.",
+    "example_careers": "Pilot, Farmer, Engineer, Mechanic"
+}
 ```
 
 #### ** /**
